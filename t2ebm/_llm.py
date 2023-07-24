@@ -46,12 +46,12 @@ def llm_describe_ebm_graph(llm, ebm, feature_index, num_sentences=7, **kwargs):
 
     # extract the graph from the EBM
     extract_kwargs = list(inspect.signature(extract_graph).parameters)
-    extract_dict = {k: kwargs.pop(k) for k in dict(kwargs) if k in extract_kwargs}
+    extract_dict = {k: kwargs[k] for k in dict(kwargs) if k in extract_kwargs}
     graph = extract_graph(ebm, feature_index, **extract_dict)
 
     # convert the graph to text
     to_text_kwargs = list(inspect.signature(graph_to_text).parameters)
-    to_text_dict = {k: kwargs.pop(k) for k in dict(kwargs) if k in to_text_kwargs}
+    to_text_dict = {k: kwargs[k] for k in dict(kwargs) if k in to_text_kwargs}
     graph = graph_to_text(graph, **to_text_dict)
 
     # ask the LLM to describe the graph and execute the prompt
@@ -59,9 +59,7 @@ def llm_describe_ebm_graph(llm, ebm, feature_index, num_sentences=7, **kwargs):
     llm_descripe_kwargs.extend(
         list(inspect.signature(prompts.describe_graph).parameters)
     )
-    llm_descripe_dict = {
-        k: kwargs.pop(k) for k in dict(kwargs) if k in llm_descripe_kwargs
-    }
+    llm_descripe_dict = {k: kwargs[k] for k in dict(kwargs) if k in llm_descripe_kwargs}
     prompt = prompts.describe_graph_cot(
         graph, num_sentences=num_sentences, **llm_descripe_dict
     )
@@ -78,14 +76,14 @@ def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
 
     # extract the graphs from the EBM
     extract_kwargs = list(inspect.signature(extract_graph).parameters)
-    extract_dict = {k: kwargs.pop(k) for k in dict(kwargs) if k in extract_kwargs}
+    extract_dict = {k: kwargs[k] for k in dict(kwargs) if k in extract_kwargs}
     graphs = []
     for feature_index in range(len(ebm.feature_names_in_)):
         graphs.append(extract_graph(ebm, feature_index, **extract_dict))
 
     # convert the graphs to text
     to_text_kwargs = list(inspect.signature(graph_to_text).parameters)
-    to_text_dict = {k: kwargs.pop(k) for k in dict(kwargs) if k in to_text_kwargs}
+    to_text_dict = {k: kwargs[k] for k in dict(kwargs) if k in to_text_kwargs}
     graphs = [graph_to_text(graph, **to_text_dict) for graph in graphs]
 
     # construct guidance prompts that ask the LLM to describe the graphs
@@ -94,7 +92,7 @@ def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
         list(inspect.signature(prompts.describe_graph).parameters)
     )
     llm_descripe_dict = {
-        k: kwargs.pop(k)
+        k: kwargs[k]
         for k in dict(kwargs)
         if k in llm_descripe_kwargs and k != "num_sentences"
     }
@@ -108,8 +106,23 @@ def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
         guidance(p, llm, silent=True)()["cot_graph_description"] for p in graph_prompts
     ]
 
-    [print(x) for x in graph_descriptions]
-    return graph_descriptions
-    # graphs = []
-    # for feature_index in range(len(ebm.feature_names_in_)):
-    #    graphs.append(llm_describe_ebm_graph(llm, ebm, feature_index, **kwargs))
+    # combine the graph descriptions in a single string
+    graph_descriptions = "\n\n".join(
+        [
+            ebm.feature_names_in_[idx] + ": " + graph_description
+            for idx, graph_description in enumerate(graph_descriptions)
+        ]
+    )
+
+    # now, ask the llm to summarize the different descriptions
+    llm_summarize_kwargs = list(inspect.signature(prompts.summarize_ebm).parameters)
+    llm_summarize_dict = {
+        k: kwargs[k] for k in dict(kwargs) if k in llm_summarize_kwargs
+    }
+    prompt = prompts.summarize_ebm(
+        feature_importances,
+        graph_descriptions,
+        num_sentences=num_sentences,
+        **llm_summarize_dict,
+    )
+    return guidance(prompt, llm, silent=True)()["short_summary"]
