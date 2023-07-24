@@ -2,6 +2,8 @@
 
 > ### Did you ever want to talk to a model?
 
+<img src="Spaceship%20Titanic_files/landing.png" alt="drawing" width="600"/>
+
 TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. This package is currently under active development.
 
 # Installation
