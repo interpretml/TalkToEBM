@@ -76,7 +76,7 @@ there may be confounding factors or interactions with other features that
 contribute to the observed pattern, and further analysis is needed to fully
 understand the influence of the HomePlanet feature on the outcome.*
 
-Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. By default this creates a 30 sentence summary.
+Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. We can also ask for a summary in a given number of sentences.
 
 ```python
 model_description = t2ebm.llm_describe_ebm(gpt4, ebm,
