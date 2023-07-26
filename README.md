@@ -25,16 +25,16 @@ import t2ebm
 gpt4 = guidance.llms.OpenAI("gpt-4")
 ```
 
-We give have trained an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview). The cool thing about this dataset is that its from 2022, so GPT-3.5 and GPT-4 have not seen it during training. 
+We have trained an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview). This dataset is from 2022, so GPT-3.5 and GPT-4 have not seen it during training. 
 
 ```python
 ebm = ExplainableBoostingClassifier(feature_names=feature_names)
 ebm.fit(X_train, y_train)
 ```
-Getting the LLM to describe a graph from the model is as simple as this
+Getting the LLM to describe a graph from the model is as simple as this. Let's describe the graph for feature 0, 'Home Planet'.
 
 ```python
-graph_desc = t2ebm.llm_describe_ebm_graph(gpt4, ebm, 0) # feature 0, 'HomePlanet'
+graph_desc = t2ebm.llm_describe_ebm_graph(gpt4, ebm, 0) 
 ```
 
 > **GPT-4:** *The feature "HomePlanet" significantly influences the model's outcome. Being
@@ -58,9 +58,9 @@ that the passenger was transported to another dimension."""
 
 
 ```python
-graph_description = t2ebm.llm_describe_ebm_graph(gpt4, ebm, 0,                             
-                                                 dataset_description=dataset_description,
-                                                 y_axis_description=y_axis_description)     # again feature 0, 'HomePlanet'
+graph_desc = t2ebm.llm_describe_ebm_graph(gpt4, ebm, 0,
+                                          dataset_description=dataset_description,
+                                          y_axis_description=y_axis_description)     
 ```
 
 > **GPT-4:** *The HomePlanet feature has a significant influence on the probability of a
@@ -76,12 +76,12 @@ there may be confounding factors or interactions with other features that
 contribute to the observed pattern, and further analysis is needed to fully
 understand the influence of the HomePlanet feature on the outcome.*
 
-Instead of describing individual graphs, we can also ask the LLM to summarize the entire model.
+Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. By default this creates a 30 sentence summary.
 
 ```python
 model_description = t2ebm.llm_describe_ebm(gpt4, ebm,
                                            dataset_description=dataset_description, 
-                                           y_axis_description=y_axis_description) # by default this creates a 30 sentence summary
+                                           y_axis_description=y_axis_description) 
 ```
 
 > **GPT-4:** *Based on the global feature importances and the summaries of the individual
@@ -158,14 +158,14 @@ prompt = t2ebm.prompts.describe_graph(graph_as_text,
                                       expert_description="{some kind of expert that will help me.}",
                                       y_axis_description="{The y-axis on the graph depicts how cool the graph is.}",
                                       special_task_description="{Pay special attention to run 'pip install t2ebm'}",
-                                      dataset_description="{My dataset is so great, I wont't even tell you about it}",
+                                      dataset_description="{My dataset is great!}",
                                       include_assistant_response=True)
 
 # our prompts use guidance, and this is a nice way to print them
 guidance(prompt, llm=gpt4)
 ```
 
-
+><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#system~}}</span>
 > You are {some kind of expert that will help me.}
 > 
 > You interpret global explanations produced by a generalized additive model (GAM). GAMs produce explanations in the form of graphs that contain the effect of a specific input feature.
@@ -184,10 +184,11 @@ guidance(prompt, llm=gpt4)
 >     - Upper bounds of confidence interval
 >
 >{Pay special attention to run &#x27;pip install t2ebm&#x27;}
+>
 ><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{~/system}}</span>
 >
 ><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#user~}}</span>
->{My dataset is so great, I wont&#x27;t even tell you about it}
+>{My dataset is great!}
 ><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{~/user}}</span>
 >
 ><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#assistant~}}</span>
