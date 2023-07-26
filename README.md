@@ -6,7 +6,7 @@
   <img src="images/landing.png" alt="drawing" width="900"/>
 </p>
 
-TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. This package is currently under active development.
+TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. This package is currently under active development, so the API is not guaranteed to stay stable.
 
 
 
