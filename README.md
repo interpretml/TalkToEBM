@@ -3,10 +3,8 @@
 > ### Did you ever want to talk to a model?
 
 <p align="center">
-  <img src="Spaceship%20Titanic_files/landing.png" alt="drawing" width="900"/>
+  <img src="images/landing.png" alt="drawing" width="900"/>
 </p>
-
-[Image Credit](https://www.publicdomainpictures.net/en/view-image.php?image=255296&picture=support-operator-woman-work)
 
 TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. This package is currently under active development.
 
@@ -115,7 +113,7 @@ graph = graphs.extract_graph(ebm, 9)  # feature 9, 'Spa'
 graphs.plot_graph(graph)
 ```
 
-<img src="Spaceship%20Titanic_files/Spaceship%20Titanic_21_0.png" alt="drawing" width="400"/>
+<img src="images/Spaceship%20Titanic_21_0.png" alt="drawing" width="400"/>
 
 The graphs learned by EBMs can contain many small details. We can simplify them to reduce the number of tokens. There is a parameter to control the degree of simplification.
 
@@ -123,7 +121,7 @@ The graphs learned by EBMs can contain many small details. We can simplify them 
 t2ebm.graphs.plot_graph(t2ebm.graphs.simplify_graph(graph, min_variation_per_cent=0.041))
 ```
 
-<img src="Spaceship%20Titanic_files/Spaceship%20Titanic_24_0.png" alt="drawing" width="400"/>
+<img src="images/Spaceship%20Titanic_24_0.png" alt="drawing" width="400"/>
 
 
 The package also supports categorical and boolean features
@@ -132,7 +130,7 @@ The package also supports categorical and boolean features
 graphs.plot_graph(graphs.extract_graph(ebm, 0)) # home planet
 ```
 
-<img src="Spaceship%20Titanic_files/Spaceship%20Titanic_22_0.png" alt="drawing" width="400"/>
+<img src="images/Spaceship%20Titanic_22_0.png" alt="drawing" width="400"/>
 
 We have to convert graphs to text before passing them to the LLM
 

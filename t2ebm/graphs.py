@@ -49,7 +49,7 @@ def extract_graph(
     :param feature_index:
     :param normalization: how to normalize the graph. possible values are: 'mean', 'min', 'none'
     :param use_feature_bounds: if True, the first and last bin are min and max value of the feature stored in the EBM. If false, the first and last value are -inf and inf, respectively.
-    :return: feature_name, feature_type, x_vals, scores, stds
+    :return: EBMGraph
     """
 
     # read the variables from the ebm
@@ -102,7 +102,7 @@ def simplify_graph(graph: EBMGraph, min_variation_per_cent: float = 0.0):
 
     :param bins:
     :param scores:
-    :return: A new simplified graph.
+    :return: EBMGraph. A new simplified graph.
     """
     assert graph.feature_type == "continuous", "Can only simplify continuous graphs."
     x_vals, scores, stds = graph.x_vals, graph.scores, graph.stds
