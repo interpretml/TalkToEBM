@@ -6,7 +6,7 @@
   <img src="images/landing.png" alt="drawing" width="900"/>
 </p>
 
-TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. This package is currently under active development, so the API is not guaranteed to stay stable.
+TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. We also have higher-level functions that directly ask the LLM to describe entire models. This package is under active development, so the current API is not guaranteed to stay stable.
 
 
 
@@ -150,8 +150,7 @@ print(graph_as_text)
 >    Upper Bounds (95%-Confidence Interval): {"(0.0, 36.5)": 0.966, "(36.5, 117.5)": 0.374, ..., "(3978.0, 18572.0)": -4.877}
     
 
-Given the textual representation of the graph, you can start to write your own prompts. Usually, the first prompt will ask the LLM to describe the graph.
-
+Given the textual representation of the graph, you can start to write your own prompts. Usually, the first prompt will ask the LLM to describe the graph. We use [guidance](https://github.com/microsoft/guidance) in order to handle sequential execution and chain-of-thought prompting.
 
 ```python
 prompt = t2ebm.prompts.describe_graph(graph_as_text,
@@ -165,49 +164,10 @@ prompt = t2ebm.prompts.describe_graph(graph_as_text,
 guidance(prompt, llm=gpt4)
 ```
 
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#system~}}</span>
-> You are {some kind of expert that will help me.}
-> 
-> You interpret global explanations produced by a generalized additive model (GAM). GAMs produce explanations in the form of graphs that contain the effect of a specific input feature.
-> 
-> The user will first provide a general description of the dataset. Then you will be given graphs from the model, and the user will ask you questions about the graphs. 
-> 
-> Answer all questions to the best of your ability, combining both the data contained in the graph, the data set description you were given, and your knowledge about the real world.
-> 
-> Graphs will be presented as a JSON object with keys representing the x-axis and values representing the y-axis. For continuous features, the keys are intervals that represent ranges where the function predicts the same value. For categorical features, each key represents a possible value that the feature > > can take. {The y-axis on the graph depicts how cool the graph is.} 
-> 
-> The user will provide graphs in the following format:
->     - The name of the feature depicted in the graph
->    - The type of the feature (continuous, categorical, or boolean)
->     - Mean values
->     - Lower bounds of confidence interval
->     - Upper bounds of confidence interval
->
->{Pay special attention to run &#x27;pip install t2ebm&#x27;}
->
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{~/system}}</span>
->
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#user~}}</span>
->{My dataset is great!}
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{~/user}}</span>
->
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#assistant~}}</span>
->Thanks for this general description of the data set. Please continue and provide more information, for example about the graphs from the model.
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{~/assistant}}</span>
->
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#user~}}</span>
->Consider the following graph from the model. This graph represents categorical feature. Each key represents a possible value that the feature can take.
->
->Feature Name: HomePlanet
->Feature Type: categorical
->Means: {&quot;Earth&quot;: -0.439, &quot;Europa&quot;: 0.87, &quot;Mars&quot;: 0.098}
->Lower Bounds (95%-Confidence Interval): {&quot;Earth&quot;: -0.475, &quot;Europa&quot;: 0.783, &quot;Mars&quot;: 0.034}
->Upper Bounds (95%-Confidence Interval): {&quot;Earth&quot;: -0.402, &quot;Europa&quot;: 0.957, &quot;Mars&quot;: 0.162}
->
->Please describe the general pattern of the graph.
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{~/user}}</span>
->
-><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{#assistant~}}</span><span style='font-family: monospace; background-color: rgba(0, 0, 0, 0.05);'>{{gen &#x27;graph_description&#x27; temperature=0.7 max_tokens=2000}}</span><span style='font-family: monospace; background-color: >rgba(0, 0, 0, 0.05);'>{{~/assistant}}</span></pre></div>
+<p align="left">
+  <img src="images/part_1.png" alt="drawing" width="800"/>
+  <img src="images/part_2.png" alt="drawing" width="800"/>
+</p>
 
 # Citation
 
