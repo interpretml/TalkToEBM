@@ -1,9 +1,7 @@
-################################################################################################################
-# Prompts that ask the LLM to perform tasks with Graphs and EBMs.
-# We use guidance: https://github.com/microsoft/guidance
-################################################################################################################
-
-import typing
+"""
+Prompts that ask the LLM to perform tasks with Graphs and EBMs.
+We use guidance: https://github.com/microsoft/guidance
+"""
 
 
 def describe_graph(

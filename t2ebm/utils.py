@@ -1,3 +1,7 @@
+"""
+Misc. helper functions
+"""
+
 from tenacity import (
     retry,
     retry_if_not_exception_type,
@@ -7,10 +11,6 @@ from tenacity import (
 
 import openai
 import tiktoken
-
-################################################################################################################
-#                                           Misc. helper functions
-################################################################################################################
 
 
 def num_tokens_from_string_(string: str, model_name: str) -> int:
