@@ -4,6 +4,7 @@
 ![Package Version](https://img.shields.io/pypi/v/t2ebm.svg?style=flat-square)
 [![Downloads](https://pepy.tech/badge/t2ebm)](https://pepy.tech/project/t2ebm)
 ![Maintenance](https://img.shields.io/maintenance/yes/2023?style=flat-square)
+![pylint Score](pylint.svg)
 <br/>
 
 > ### Did you ever want to talk to a model?
