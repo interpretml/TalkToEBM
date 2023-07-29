@@ -1,3 +1,6 @@
+"""
+Automates unit testing.
+"""
 import unittest
 
 
