@@ -1,3 +1,7 @@
+"""
+TalkToEBM: A Natural Language Interface to Explainable Boosting Machines
+"""
+
 __version__ = "0.0.1"
 
 # high-level functions

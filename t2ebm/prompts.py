@@ -1,9 +1,7 @@
-################################################################################################################
-# Prompts that ask the LLM to perform tasks with Graphs and EBMs.
-# We use guidance: https://github.com/microsoft/guidance
-################################################################################################################
-
-import typing
+"""
+Prompts that ask the LLM to perform tasks with Graphs and EBMs.
+We use guidance: https://github.com/microsoft/guidance
+"""
 
 
 def describe_graph(
@@ -52,7 +50,9 @@ The user will provide graphs in the following format:
         prompt += (
             "\n{{#user~}}\n"
             + dataset_description
-            + "\n{{~/user}}\n\n{{#assistant~}}\nThanks for this general description of the data set. Please continue and provide more information, for example about the graphs from the model.\n{{~/assistant}}\n"
+            + "\n{{~/user}}\n\n{{#assistant~}}\nThanks for this general description of"
+            " the data set. Please continue and provide more information, for example"
+            " about the graphs from the model.\n{{~/assistant}}\n"
         )
 
     # the user provides the graph and asks for a description of the patterns in the graph
@@ -129,7 +129,9 @@ You will be given:
         prompt += (
             "\n{{#user~}}\n"
             + dataset_description
-            + "\n{{~/user}}\n\n{{#assistant~}}\nThanks for this general description of the data set. Now please provide the global feature importances.\n{{~/assistant}}\n"
+            + "\n{{~/user}}\n\n{{#assistant~}}\nThanks for this general description of"
+            " the data set. Now please provide the global feature"
+            " importances.\n{{~/assistant}}\n"
         )
 
     # feature importances and graph descriptions
@@ -138,7 +140,10 @@ You will be given:
         + feature_importances
         + "\n{{~/user}}\n\n"
     )
-    prompt += "{{#assistant~}}\n Thanks. Now please provide the descriptions of the different graphs.\n{{~/assistant}}\n\n"
+    prompt += (
+        "{{#assistant~}}\n Thanks. Now please provide the descriptions of the different"
+        " graphs.\n{{~/assistant}}\n\n"
+    )
     prompt += (
         "{{#user~}}\n Here are the descriptions of the different graphs.\n\n"
         + graph_descriptions
@@ -151,7 +156,8 @@ You will be given:
         prompt += (
             "{{#user~}}\n Great. Now shorten the above summary to at most "
             + str(num_sentences)
-            + " sentences. Be sure to keep the most important information.\n{{~/user}}\n\n"
+            + " sentences. Be sure to keep the most important"
+            " information.\n{{~/user}}\n\n"
         )
         prompt += """{{#assistant~}}\n{{gen 'short_summary' temperature=0.7 max_tokens=1000}}\n{{~/assistant}}\n\n"""
 

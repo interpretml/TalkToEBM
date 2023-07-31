@@ -1,4 +1,11 @@
 # TalkToEBM
+![License](https://img.shields.io/github/license/interpretml/TalkToEBM.svg?style=flat-square)
+![Python Version](https://img.shields.io/badge/python-3.7%20|%203.8%20|%203.9%20|%203.10-blue)
+![Package Version](https://img.shields.io/pypi/v/t2ebm.svg?style=flat-square)
+[![Downloads](https://pepy.tech/badge/t2ebm)](https://pepy.tech/project/t2ebm)
+![Maintenance](https://img.shields.io/maintenance/yes/2023?style=flat-square)
+![pylint Score](pylint.svg)
+<br/>
 
 > ### Did you ever want to talk to a model?
 

@@ -1,24 +1,18 @@
-from interpret.glassbox._ebm._utils import convert_to_intervals
-
-import numpy as np
-
 from dataclasses import dataclass
-
-import matplotlib.pyplot as plt
-
-
 import typing
 
-
+import matplotlib.pyplot as plt
+import numpy as np
 import scipy
+
+from interpret.glassbox._ebm._utils import convert_to_intervals
 
 from t2ebm.utils import num_tokens_from_string_
 
-
-################################################################################################################
+###################################################################################################
 # Put individual graphs to text
 # Also has a datatype for graphs and various simple operations on this datatype.
-################################################################################################################
+###################################################################################################
 
 
 # a low-level datastructure for the graphs of explainable boosting machines
@@ -220,11 +214,20 @@ def graph_to_text(
 
     # the description of the graph depends on the feature format
     if feature_format == "continuous":
-        description_text = "This graph represents a continuous-valued feature. The keys are intervals that represent ranges where the function predicts the same value.\n\n"
+        description_text = (
+            "This graph represents a continuous-valued feature. The keys are intervals"
+            " that represent ranges where the function predicts the same value.\n\n"
+        )
     elif feature_format == "categorical":
-        description_text = "This graph represents categorical feature. Each key represents a possible value that the feature can take.\n\n"
+        description_text = (
+            "This graph represents categorical feature. Each key represents a possible"
+            " value that the feature can take.\n\n"
+        )
     elif feature_format == "boolean":
-        description_text = "This graph represents a boolean feature. The keys are 'True' and 'False', the two possible values of the feature.\n\n"
+        description_text = (
+            "This graph represents a boolean feature. The keys are 'True' and 'False',"
+            " the two possible values of the feature.\n\n"
+        )
     else:
         raise Exception(f"Unknown feature format {feature_format}")
 
@@ -279,9 +282,10 @@ def graph_to_text(
 
         # formatting for boolean features
         if feature_format == "boolean":
-            assert (
-                len(x_vals) == 2
-            ), f"Requested a boolean format, but the feature has more than x-axis values: {x_vals}"
+            assert len(x_vals) == 2, (
+                "Requested a boolean format, but the feature has more than x-axis"
+                f" values: {x_vals}"
+            )
             # we assume that the left key (the lower numer, typically -1 or 0), is 'False'
             x_vals = ["False", "True"]
 
@@ -293,8 +297,14 @@ def graph_to_text(
         prompt += f"Feature Type: {feature_format}\n"
         prompt += f"Means: {xy_to_json_(x_vals, scores)}\n"
         if confidence_bounds:
-            prompt += f"Lower Bounds ({confidence_level*100:.0f}%-Confidence Interval): {xy_to_json_(x_vals, lower_bounds)}\n"
-            prompt += f"Upper Bounds ({confidence_level*100:.0f}%-Confidence Interval): {xy_to_json_(x_vals, upper_bounds)}\n"
+            prompt += (
+                f"Lower Bounds ({confidence_level*100:.0f}%-Confidence Interval):"
+                f" {xy_to_json_(x_vals, lower_bounds)}\n"
+            )
+            prompt += (
+                f"Upper Bounds ({confidence_level*100:.0f}%-Confidence Interval):"
+                f" {xy_to_json_(x_vals, upper_bounds)}\n"
+            )
 
         # count the number of tokens
         total_tokens = num_tokens_from_string_(prompt, "gpt-4")
@@ -302,19 +312,26 @@ def graph_to_text(
             if total_tokens > max_tokens:
                 if min_variation_per_cent > 0.1:
                     raise Exception(
-                        f"The graph for feature {graph.feature_name} of type {graph.feature_type} requires {total_tokens} tokens even at a simplification level of 10\%. This graph is too complex to be passed to the LLM within the loken limit of {max_tokens} tokens."
+                        f"The graph for feature {graph.feature_name} of type"
+                        f" {graph.feature_type} requires {total_tokens} tokens even at"
+                        " a simplification level of 10\%. This graph is too complex to"
+                        " be passed to the LLM within the loken limit of"
+                        f" {max_tokens} tokens."
                     )
                 min_variation_per_cent += 0.001
             else:
                 if min_variation_per_cent > 0:
                     print(
-                        f"INFO: The graph of feature {graph.feature_name} was simplified by {min_variation_per_cent * 100:.1f}%."
+                        f"INFO: The graph of feature {graph.feature_name} was"
+                        f" simplified by {min_variation_per_cent * 100:.1f}%."
                     )
                 return prompt
         else:
             if total_tokens > max_tokens:
                 raise Exception(
-                    f"The graph for feature {graph.feature_name} of type {graph.feature_type} requires {total_tokens} tokens and exceeds the token limit of {max_tokens}."
+                    f"The graph for feature {graph.feature_name} of type"
+                    f" {graph.feature_type} requires {total_tokens} tokens and exceeds"
+                    f" the token limit of {max_tokens}."
                 )
             else:
                 return prompt
