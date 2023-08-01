@@ -19,7 +19,7 @@ Features:
 - [x] Convert EBMs and their graphs to text that can be understood by LLMs. Includes confidence intervals.
 - [x] Ask the LLM to describe and summarize individual graphs or entire models.
 - [x] Automatic simplification of minor details in graphs to stay within the desired token limit.
-- [x] Highly modular approach that allows to write custum prompts - ask the LLM to perform any desired task with the EBM.
+- [x] Highly modular approach that allows to write custom prompts - ask the LLM to perform any desired task with the EBM.
 
 # Installation
 
