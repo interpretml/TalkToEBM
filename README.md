@@ -7,7 +7,7 @@
 ![pylint Score](pylint.svg)
 <br/>
 
-> ### Did you ever want to talk to a model?
+> ### A Natural Language Interface to Explainable Boosting Machines
 
 <p align="center">
   <img src="images/landing.png" alt="drawing" width="900"/>
