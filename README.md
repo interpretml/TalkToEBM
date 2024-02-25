@@ -182,7 +182,16 @@ guidance(prompt, llm=gpt4)
 
 # Citation
 
-If you use this software in your research, please consider to cite our paper.
+If you use this software in your research, please consider citing our research papers.
+
+```bib
+@inproceedings{bordt2024talktoebm,
+  author    = {Sebastian Bordt, Ben Lengerich, Harsha Nori, Rich Caruana},
+  title     = {Data Science with LLMs and Interpretable Models},
+  booktitle = {XAI4Sci Workshop at AAAI-24},
+  year      = {2024}
+ }
+```
 
 ```bib
 @inproceedings{lengerich2023llms,
