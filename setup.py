@@ -28,8 +28,8 @@ setuptools.setup(
         "numpy",
         "matplotlib",
         "tiktoken",
-        "guidance",
-        "openai",
+        "guidance",  # "guidance==0.0.64"
+        "openai",  # "openai"
         "tenacity",
         "scipy",
         "interpret",
