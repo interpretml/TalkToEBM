@@ -1,16 +1,14 @@
 """
 Prompts that ask the LLM to perform tasks with Graphs and EBMs.
-We use guidance: https://github.com/microsoft/guidance
 """
 
 
 def describe_graph(
     graph: str,
-    expert_description="an expert statistician and data scientist.",
+    expert_description="an expert statistician and data scientist",
     y_axis_description="",
-    special_task_description="",
     dataset_description="",
-    include_assistant_response=True,
+    special_task_description="",
 ):
     """Prompt the LLM to describe a graph. This will often be the very first prompt in a conversation.
 
@@ -20,53 +18,34 @@ def describe_graph(
     :param expertise_desc: description of the desired expertise of the LLM
     :return:
     """
-
-    # the system prompt
-    prompt = (
-        "{{#system~}}\n"
-        + f"""You are {expert_description}
+    # a general system prompt that instructs the LLM
+    # the system prompt does not contain any specific information about the data, so it could be omitted for a model that does not support a system prompt
+    system_msg = f"You are {expert_description}. You interpret global explanations produced by a generalized additive model (GAM). You answer all questions to the best of your ability, combining the data contained in the graph, any data set description you are given, and your knowledge about the real world."
+    # the user message begins with an introduction to the task
+    user_msg = """Below is the graph of a generalized additive model (GAM). The graph is presented as a JSON object with keys representing the x-axis and values representing the y-axis. For continuous features, the keys are intervals that represent ranges where the function predicts the same value. For categorical features, each key represents a possible value that the feature can take.
     
-You interpret global explanations produced by a generalized additive model (GAM). GAMs produce explanations in the form of graphs that contain the effect of a specific input feature.
-
-{'You will be given graphs from the model, and the user will ask you questions about the graphs.'  if dataset_description is None or dataset_description == '' else 'The user will first provide a general description of the dataset. Then you will be given graphs from the model, and the user will ask you questions about the graphs.'} 
-    
-Answer all questions to the best of your ability, combining both the data contained in the graph{', the data set description you were given, and your knowledge about the real world.' if dataset_description is not None and len(dataset_description) > 0 else ' and your knowledge about the real world.'}
-
-Graphs will be presented as a JSON object with keys representing the x-axis and values representing the y-axis. For continuous features, the keys are intervals that represent ranges where the function predicts the same value. For categorical features, each key represents a possible value that the feature can take. {y_axis_description if y_axis_description is not None and len(dataset_description) > 0 else ''} 
-    
-The user will provide graphs in the following format:
+The graph is provided in the following format:
     - The name of the feature depicted in the graph
     - The type of the feature (continuous, categorical, or boolean)
     - Mean values
-    - Lower bounds of confidence interval
-    - Upper bounds of confidence interval
+    - Lower bounds of confidence interval (optional)
+    - Upper bounds of confidence interval (optional)\n\n"""
+    # optional y axis description
+    if y_axis_description is not None and len(y_axis_description) > 0:
+        user_msg += f"{y_axis_description}\n\n"
+    # the graph
+    user_msg += f"Here is the graph:\n\n{graph}\n\n"
 
-{special_task_description}\n"""
-        + "{{~/system}}\n"
-    )
+    # the task is to describe the graph, optionally with a special task description
+    user_msg += "Please describe the general pattern of the graph."
+    if special_task_description is not None and len(special_task_description) > 0:
+        user_msg += f" {special_task_description}\n"
 
-    # a user-assistant interaction where the user describes the data set
-    if dataset_description is not None and len(dataset_description) > 0:
-        prompt += (
-            "\n{{#user~}}\n"
-            + dataset_description
-            + "\n{{~/user}}\n\n{{#assistant~}}\nThanks for this general description of"
-            " the data set. Please continue and provide more information, for example"
-            " about the graphs from the model.\n{{~/assistant}}\n"
-        )
-
-    # the user provides the graph and asks for a description of the patterns in the graph
-    prompt += (
-        "\n{{#user~}}\nConsider the following graph from the model. "
-        + graph
-        + "\nPlease describe the general pattern of the graph.\n{{~/user}}\n\n"
-    )
-
-    # the assistant responds
-    if include_assistant_response:
-        prompt += """{{#assistant~}}{{gen 'graph_description' temperature=0.7 max_tokens=2000}}{{~/assistant}}"""
-
-    return prompt
+    # return in the openai message format
+    return [
+        {"role": "system", "content": system_msg},
+        {"role": "user", "content": user_msg},
+    ]
 
 
 def describe_graph_cot(graph, num_sentences=7, **kwargs):

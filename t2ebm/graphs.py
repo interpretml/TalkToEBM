@@ -4,6 +4,7 @@ import typing
 import matplotlib.pyplot as plt
 import numpy as np
 import scipy
+import json
 
 from interpret.glassbox._ebm._utils import convert_to_intervals
 
@@ -335,3 +336,49 @@ def graph_to_text(
                 )
             else:
                 return prompt
+
+
+def parse_str_tuple_to_float_tuple(str_tuple: str):
+    """Parse a string tuple to a float tuple"""
+    return tuple(float(x) for x in str_tuple[1:-1].split(","))
+
+
+def text_to_graph(graph: str):
+    """Convert  the textual representation of a graph back to an EBMGraph."""
+    split_graph = graph.split("\n")
+
+    # find the line that starts with "Feature Name:"
+    start_idx = 0
+    while not split_graph[start_idx].startswith("Feature Name:"):
+        start_idx = start_idx + 1
+
+    feature_name = split_graph[start_idx][13:].strip()
+    feature_type = split_graph[start_idx + 1][13:].strip()
+    assert (
+        feature_type == "continuous"
+    ), "currently only continuous features are supported to convert back to graph"
+
+    # parse json
+    means_json = split_graph[start_idx + 2][6:]
+    means_json = json.loads(means_json)
+
+    lower_bounds_json = split_graph[start_idx + 3]
+    lower_bounds_json = lower_bounds_json[lower_bounds_json.find("):") + 2 :]
+    lower_bounds_json = json.loads(lower_bounds_json)
+
+    upper_bounds_json = split_graph[start_idx + 4]
+    upper_bounds_json = upper_bounds_json[upper_bounds_json.find("):") + 2 :]
+    upper_bounds_json = json.loads(upper_bounds_json)
+
+    # json to EBMGraph format
+    x_vals = [parse_str_tuple_to_float_tuple(k) for k, _ in means_json.items()]
+    scores = [v for _, v in means_json.items()]
+    lower_bounds = [v for _, v in lower_bounds_json.items()]
+    upper_bounds = [v for _, v in upper_bounds_json.items()]
+
+    # heuristically determine the stds from the lower and upper bounds
+    confidence_level = 0.95  # assume 95% confidence interval TODO: infer from the text
+    factor = scipy.stats.norm.interval(confidence_level, loc=0, scale=1)[1]
+    stds = [(u - l) / 2 / factor for u, l in zip(upper_bounds, lower_bounds)]
+
+    return EBMGraph(feature_name, feature_type, x_vals, scores, stds)
