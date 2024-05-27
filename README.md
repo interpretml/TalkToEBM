@@ -29,13 +29,7 @@ pip install t2ebm
 
 # High-Level API: Pass the EBM to the LLM
 
-```python
-import t2ebm
-
-gpt4 = guidance.llms.OpenAI("gpt-4")
-```
-
-We have trained an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview). This dataset is from 2022, so GPT-3.5 and GPT-4 have not seen it during training. 
+We have trained an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview).
 
 ```python
 ebm = ExplainableBoostingClassifier(feature_names=feature_names)
@@ -44,18 +38,26 @@ ebm.fit(X_train, y_train)
 Getting the LLM to describe a graph from the model is as simple as this. Let's describe the graph for feature 0, 'Home Planet'.
 
 ```python
-graph_desc = t2ebm.llm_describe_ebm_graph(gpt4, ebm, 0) 
+import t2ebm
+
+graph_description = t2ebm.describe_graph('gpt-4-turbo-2024-04-09', ebm, 0)
 ```
 
-> **GPT-4:** *The feature "HomePlanet" significantly influences the model's outcome. Being
-from "Europa" has the highest positive effect with a mean value of 0.87. The
-"Mars" category also has a positive effect, albeit much smaller, with a mean
-value of 0.098. On the contrary, being from "Earth" negatively impacts the
-prediction, with a mean value of -0.439. The 95% confidence intervals suggest
-that these effects are statistically significant and not due to random chance.
-However, without additional context, it's difficult to determine why these
-differences occur. Further investigation would be required for a deeper
-understanding.*
+> **GPT-4:** *The graph illustrates the effects of the categorical feature `HomePlanet` on a
+dependent variable, as modeled by a Generalized Additive Model (GAM). The
+feature `HomePlanet` includes three categories: "Earth," "Europa," and "Mars."
+Passengers from Europa exhibit a notably high positive mean effect of 0.5678 on
+the dependent variable, with a tight confidence interval ranging from 0.5116 to
+0.624, suggesting a strong and consistent positive impact. In contrast, Earth
+shows a negative mean effect of -0.3246 with the confidence interval from -0.354
+to -0.2952, indicating a robust negative association. Mars, while also positive,
+has a much milder effect of 0.1713, with its confidence interval spanning from
+0.1256 to 0.2171. This pronounced disparity in the effects, especially the
+negative impact associated with Earth, is surprising and could hint at
+underlying socio-economic or contextual factors influencing these outcomes.
+Understanding these patterns might require further investigation into the
+dataset's characteristics, including possible biases or the nature of the
+dependent variable.*
 
 We can give the LLM more context by providing a description of the dataset and the outcome. This allows the LLM to talk about the spacetime anomaly.
 
@@ -68,23 +70,31 @@ that the passenger was transported to another dimension."""
 
 
 ```python
-graph_desc = t2ebm.llm_describe_ebm_graph(gpt4, ebm, 0,
-                                          dataset_description=dataset_description,
-                                          y_axis_description=y_axis_description)     
+graph_description = t2ebm.describe_graph('gpt-4-turbo-2024-04-09', 
+                                          ebm,
+                                          0, 
+                                          graph_description=graph_description,
+                                          dataset_description=dataset_description)  
 ```
 
-> **GPT-4:** *The HomePlanet feature has a significant influence on the probability of a
-passenger being transported to an alternate dimension during the collision with
-the spacetime anomaly. Passengers from Europa have the highest positive effect,
-indicating a higher likelihood of being transported. On the other hand,
-passengers from Earth have a negative effect, suggesting a lower likelihood of
-being transported. Interestingly, passengers from Mars have a smaller positive
-effect compared to Europa, but still higher than Earth. This suggests that the
-planet of origin plays a role in determining the probability of being
-transported, with passengers from Europa having the highest likelihood. However,
-there may be confounding factors or interactions with other features that
-contribute to the observed pattern, and further analysis is needed to fully
-understand the influence of the HomePlanet feature on the outcome.*
+> **GPT-4:** *The graph from the Generalized Additive Model (GAM) showcases the contributions
+of different home planets—Earth, Europa, and Mars—towards the log-odds of
+passengers being transported to another dimension on the Spaceship Titanic.
+Passengers from Europa exhibit a strong positive contribution to the likelihood
+of being transported, with a mean log-odds contribution of 0.5678, indicating a
+higher propensity for these individuals to experience the anomalous event.
+Conversely, Earth shows a negative contribution (-0.3246 mean log-odds),
+suggesting that passengers from Earth are less likely to be transported compared
+to the baseline. Mars, while also showing a positive contribution (0.1713 mean
+log-odds), has a lesser effect than Europa, but still indicates an increased
+likelihood over Earth. This pattern could suggest unique environmental,
+technological, or cultural factors on Europa and Mars that influence their
+inhabitants' interactions with the spacetime anomaly encountered during the
+voyage. The observed negative contribution from Earth might hint at more
+effective protective measures or less vulnerability to such spacetime
+disturbances. These findings highlight planet-based differences in
+susceptibility to extraordinary events, revealing insights into interplanetary
+travel and safety in this futuristic scenario.*
 
 Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. We can also ask for a summary in a given number of sentences.
 
@@ -94,22 +104,40 @@ model_description = t2ebm.llm_describe_ebm(gpt4, ebm,
                                            y_axis_description=y_axis_description) 
 ```
 
-> **GPT-4:** *Based on the global feature importances and the summaries of the individual
-features, we can provide the following summary:  The most important features in
-the model are Spa, VRDeck, CryoSleep, and RoomService.   Passengers who spent
-more at the spa had a lower probability of being affected by the anomaly. Higher
-spending on the VRDeck also decreased the likelihood of being transported,
-although there was a surprising counterintuitive behavior within a specific
-spending range.   Choosing to be in cryosleep during the voyage increased the
-probability of being affected by the anomaly, which was unexpected.   Higher
-spending on room service corresponded to a higher probability of being affected,
-but extremely high spending was associated with a lower probability.   Other
-features had lower importances and may have less significant or less
-straightforward effects on the outcome.  In summary, Spa, VRDeck, CryoSleep, and
-RoomService were the most important features. The unexpected findings, such as
-the counterintuitive influence of cryosleep and the complex relationships
-observed in features like RoomService and VRDeck, warrant further investigation
-and analysis.*
+> **GPT-4:** *The Generalized Additive Model (GAM) applied to the Spaceship Titanic dataset
+has uncovered significant relationships between passenger features and the
+likelihood of being transported to an alternate dimension during a spacetime
+anomaly. Here's a condensed summary of the key findings:  1. **CryoSleep**
+(Feature Importance: 0.56):    - Passengers in CryoSleep are significantly more
+likely to be transported (mean effect = 0.814) compared to those not in
+CryoSleep (mean effect = -0.447). This suggests unique interactions between the
+CryoSleep technology and the anomaly.  2. **Spa** (Feature Importance: 0.72):
+- There is a strong negative correlation between spa spending and the likelihood
+of transportation, with a steep decline in likelihood as expenditures increase.
+This counterintuitive pattern points to complex, non-linear effects of luxury
+expenditures on outcomes.  3. **VRDeck** (Feature Importance: 0.63):    - Higher
+spending on the VRDeck is associated with a lower likelihood of being
+transported, with an increasing negative effect as expenditure rises.  4.
+**RoomService** (Feature Importance: 0.48):    - Minimal initial spending on
+room service slightly increases the likelihood of being transported, but as
+spending rises, the effect becomes negatively pronounced. This indicates complex
+interactions influenced by passenger behavior or security measures.  5.
+**HomePlanet** (Feature: 0.35):    - Europa passengers are notably more likely
+to be transported (mean = 0.5678) compared to those from Earth (mean = -0.3246)
+and Mars (mean = 0.1713), suggesting differences in technology or emergency
+responses among the planets.  6. **Cabin** (Feature: 0.39):    - Cabin location
+significantly affects transportation likelihood, with notable disparities
+between cabin sides (Port vs. Starboard) on the same deck, indicating uneven
+exposure to the anomaly or structural differences in the ship.  Surprising
+Patterns: - **Age**: There's a non-linear relationship with age, where both very
+young and older seniors show higher transportation probabilities, highlighting
+age-specific dynamics in anomaly interaction. - **Destination**: Passengers to
+"55 Cancri e" have a higher transportation likelihood compared to other
+destinations, indicating unique risks associated with this route.  This GAM
+analysis provides crucial insights into the dynamics of spacetime anomalies in
+interstellar travel, emphasizing the importance of considering complex and non-
+linear interactions between features and outcomes for safety and operational
+strategies.*
 
 # Low-Level API: Extract Graphs from the EBM and perform custom prompts
 
@@ -163,21 +191,41 @@ print(graph_as_text)
 Given the textual representation of the graph, you can start to write your own prompts. Usually, the first prompt will ask the LLM to describe the graph. We use [guidance](https://github.com/microsoft/guidance) in order to handle sequential execution and chain-of-thought prompting.
 
 ```python
-prompt = t2ebm.prompts.describe_graph(graph_as_text,
-                                      expert_description="{some kind of expert that will help me.}",
-                                      y_axis_description="{The y-axis on the graph depicts how cool the graph is.}",
-                                      special_task_description="{Pay special attention to run 'pip install t2ebm'}",
-                                      dataset_description="{My dataset is great!}",
-                                      include_assistant_response=True)
-
-# our prompts use guidance, and this is a nice way to print them
-guidance(prompt, llm=gpt4)
+t2ebm.prompts.describe_graph(graph_as_text,
+                             graph_description="{The y-axis on the graph depicts how cool the graph is.}",
+                             dataset_description="{The dataset is great!}",
+                             task_description="{Please summarize the graph. Pay special attention to run 'pip install t2ebm'}",)
 ```
 
-<p align="left">
-  <img src="images/part_1.png" alt="drawing" width="800"/>
-  <img src="images/part_2.png" alt="drawing" width="800"/>
-</p>
+```
+Below is the graph of a Generalized Additive Model (GAM). The graph is presented as a JSON object with keys representing the x-axis and values representing the y-axis. For continuous features, the keys are intervals that represent ranges where the function predicts the same value. For categorical features, each key represents a possible value that the feature can take.
+    
+The graph is provided in the following format:
+    - The name of the feature depicted in the graph
+    - The type of the feature (continuous, categorical, or boolean)
+    - Mean values
+    - Lower bounds of confidence interval (optional)
+    - Upper bounds of confidence interval (optional)
+
+Here is the graph:
+
+This graph represents categorical feature. Each key represents a possible value that the feature can take.
+
+Feature Name: HomePlanet
+Feature Type: categorical
+Means: {"Earth": -0.3246, "Europa": 0.5678, "Mars": 0.1713}
+Lower Bounds (95%-Confidence Interval): {"Earth": -0.354, "Europa": 0.5116, "Mars": 0.1256}
+Upper Bounds (95%-Confidence Interval): {"Earth": -0.2952, "Europa": 0.624, "Mars": 0.2171}
+
+
+{The y-axis on the graph depicts how cool the graph is.}
+
+Here is a description of the dataset that the model was trained on:
+
+{The dataset is great!}
+
+{Please summarize the graph. Pay special attention to run 'pip install t2ebm'}
+```
 
 # Citation
 

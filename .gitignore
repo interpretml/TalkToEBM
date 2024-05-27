@@ -1,6 +1,6 @@
 data/
-benchmarks/data
-benchmarks/models
+benchmark/data
+benchmark/models
 *.pkl
 
 # Byte-compiled / optimized / DLL files

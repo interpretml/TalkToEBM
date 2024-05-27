@@ -2,17 +2,22 @@
 TalkToEBM: A Natural Language Interface to Explainable Boosting Machines
 """
 
-import numpy as np
-
-
 import inspect
 
-import guidance
+from typing import Union
 
+import t2ebm
+import t2ebm.backend
+from t2ebm.backend import AbstractChatModel
 
 from t2ebm.graphs import extract_graph, graph_to_text
 
 import t2ebm.prompts as prompts
+
+from interpret.glassbox import (
+    ExplainableBoostingClassifier,
+    ExplainableBoostingRegressor,
+)
 
 ###################################################################################################
 # Talk to the EBM about other things than graphs.
@@ -33,7 +38,13 @@ def feature_importances_to_text(ebm):
 ################################################################################################################
 
 
-def llm_describe_ebm_graph(llm, ebm, feature_index, num_sentences=7, **kwargs):
+def describe_graph(
+    llm: Union[AbstractChatModel, str],
+    ebm: Union[ExplainableBoostingClassifier, ExplainableBoostingRegressor],
+    feature_index: int,
+    num_sentences: int = 7,
+    **kwargs,
+):
     """Ask the LLM to describe a graph from an EBM, using chain-of-thought reasoning.
 
     This function accepts arbitrary keyword arguments that are passed to the corresponding lower-level functions.
@@ -43,6 +54,9 @@ def llm_describe_ebm_graph(llm, ebm, feature_index, num_sentences=7, **kwargs):
     :param kwargs: see llm_describe_graph
     :return: A summary of the graph in at most num_sentences sentences.
     """
+
+    # llm setup
+    llm = t2ebm.backend.setup(llm)
 
     # extract the graph from the EBM
     extract_kwargs = list(inspect.signature(extract_graph).parameters)
@@ -54,21 +68,33 @@ def llm_describe_ebm_graph(llm, ebm, feature_index, num_sentences=7, **kwargs):
     to_text_dict = {k: kwargs[k] for k in dict(kwargs) if k in to_text_kwargs}
     graph = graph_to_text(graph, **to_text_dict)
 
-    # ask the LLM to describe the graph and execute the prompt
+    # get a cot sequence of messages to describe the graph
     llm_descripe_kwargs = list(inspect.signature(prompts.describe_graph_cot).parameters)
     llm_descripe_kwargs.extend(
         list(inspect.signature(prompts.describe_graph).parameters)
     )
     llm_descripe_dict = {k: kwargs[k] for k in dict(kwargs) if k in llm_descripe_kwargs}
-    prompt = prompts.describe_graph_cot(
+    messages = prompts.describe_graph_cot(
         graph, num_sentences=num_sentences, **llm_descripe_dict
     )
 
-    return guidance(prompt, llm, silent=True)()["cot_graph_description"]
+    # execute the prompt
+    messages = t2ebm.backend.chat_completion(llm, messages)
+
+    # the last message contains the summary
+    return messages[-1]["content"]
 
 
-def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
+def describe_ebm(
+    llm: Union[AbstractChatModel, str],
+    ebm: Union[ExplainableBoostingClassifier, ExplainableBoostingRegressor],
+    num_sentences: int = 30,
+    **kwargs,
+):
     """Ask the LLM to describe the LLM in at most {num_sentences} sentences."""
+
+    # llm setup
+    llm = t2ebm.backend.setup(llm)
 
     # Note: We convert all objects to text before we prompt the LLM the first time.
     # The idea is that if there is an error processing one of the graphs, we get it before we prompt the LLM.
@@ -86,7 +112,7 @@ def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
     to_text_dict = {k: kwargs[k] for k in dict(kwargs) if k in to_text_kwargs}
     graphs = [graph_to_text(graph, **to_text_dict) for graph in graphs]
 
-    # construct guidance prompts that ask the LLM to describe the graphs
+    # get a cot sequence of messages to describe the graph
     llm_descripe_kwargs = list(inspect.signature(prompts.describe_graph_cot).parameters)
     llm_descripe_kwargs.extend(
         list(inspect.signature(prompts.describe_graph).parameters)
@@ -96,14 +122,14 @@ def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
         for k in dict(kwargs)
         if k in llm_descripe_kwargs and k != "num_sentences"
     }
-    graph_prompts = [
+    messages = [
         prompts.describe_graph_cot(graph, num_sentences=7, **llm_descripe_dict)
         for graph in graphs
     ]
 
     # execute the prompts
     graph_descriptions = [
-        guidance(p, llm, silent=True)()["cot_graph_description"] for p in graph_prompts
+        t2ebm.backend.chat_completion(llm, msg)[-1]["content"] for msg in messages
     ]
 
     # combine the graph descriptions in a single string
@@ -114,15 +140,19 @@ def llm_describe_ebm(llm, ebm, num_sentences=30, **kwargs):
         ]
     )
 
+    # print(graph_descriptions)
+
     # now, ask the llm to summarize the different descriptions
     llm_summarize_kwargs = list(inspect.signature(prompts.summarize_ebm).parameters)
     llm_summarize_dict = {
         k: kwargs[k] for k in dict(kwargs) if k in llm_summarize_kwargs
     }
-    prompt = prompts.summarize_ebm(
+    messages = prompts.summarize_ebm(
         feature_importances,
         graph_descriptions,
         num_sentences=num_sentences,
         **llm_summarize_dict,
     )
-    return guidance(prompt, llm, silent=True)()["short_summary"]
+
+    # execute the prompt and return the summary
+    return t2ebm.backend.chat_completion(llm, messages)[-1]["content"]

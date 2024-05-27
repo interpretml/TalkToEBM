@@ -9,7 +9,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="t2ebm",
-    version="0.0.1",
+    version="0.1.0",
     author="Sebastian Bordt, Ben Lengerich, Harsha Nori, Rich Caruana",
     author_email="sbordt@posteo.de",
     description="A Natural Language Interface to Explainable Boosting Machines",
@@ -28,8 +28,7 @@ setuptools.setup(
         "numpy",
         "matplotlib",
         "tiktoken",
-        "guidance",  # "guidance==0.0.64"
-        "openai",  # "openai"
+        "openai>=1.8.0",
         "tenacity",
         "scipy",
         "interpret",
