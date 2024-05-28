@@ -98,10 +98,10 @@ travel and safety in this futuristic scenario.*
 Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. We can also ask for a summary in a given number of sentences.
 
 ```python
-t2ebm.llm_describe_ebm('gpt-4-turbo-2024-04-09',
-                       ebm,
-                       dataset_description=dataset_description, 
-                       y_axis_description=y_axis_descripton) 
+t2ebm.describe_ebm('gpt-4-turbo-2024-04-09',
+                   ebm,
+                   dataset_description=dataset_description, 
+                   y_axis_description=y_axis_descripton) 
 ```
 
 > **GPT-4:** *The Generalized Additive Model (GAM) applied to the Spaceship Titanic dataset
