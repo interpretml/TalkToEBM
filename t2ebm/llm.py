@@ -1,7 +1,7 @@
 """
-TalkToEBM structures conversations in a generic message format that can be executed with different backends.
+TalkToEBM structures conversations in a generic message format that can be executed with different LLMs.
 
-We implement suppor for the OpenAI API.
+To use a custom LLM, simply implement AbstractChatModel. 
 """
 
 from dataclasses import dataclass
@@ -126,7 +126,10 @@ def setup(model: Union[AbstractChatModel, str]):
 
 
 def chat_completion(llm: Union[str, AbstractChatModel], messages):
-    """Execute a series of chat messages. Converts our generic message format to individual requests to the model."""
+    """Execute a sequence of user and assistant messages with an AbstractChatModel.
+
+    Sends multiple individual messages to the AbstractChatModel.
+    """
     llm = setup(llm)
     # we sequentially execute all assistant messages that do not have a content.
     messages = copy.deepcopy(messages)  # do not alter the input

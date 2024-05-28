@@ -7,8 +7,8 @@ import inspect
 from typing import Union
 
 import t2ebm
-import t2ebm.backend
-from t2ebm.backend import AbstractChatModel
+import t2ebm.llm
+from t2ebm.llm import AbstractChatModel
 
 from t2ebm.graphs import extract_graph, graph_to_text
 
@@ -56,7 +56,7 @@ def describe_graph(
     """
 
     # llm setup
-    llm = t2ebm.backend.setup(llm)
+    llm = t2ebm.llm.setup(llm)
 
     # extract the graph from the EBM
     extract_kwargs = list(inspect.signature(extract_graph).parameters)
@@ -79,7 +79,7 @@ def describe_graph(
     )
 
     # execute the prompt
-    messages = t2ebm.backend.chat_completion(llm, messages)
+    messages = t2ebm.llm.chat_completion(llm, messages)
 
     # the last message contains the summary
     return messages[-1]["content"]
@@ -94,7 +94,7 @@ def describe_ebm(
     """Ask the LLM to describe the LLM in at most {num_sentences} sentences."""
 
     # llm setup
-    llm = t2ebm.backend.setup(llm)
+    llm = t2ebm.llm.setup(llm)
 
     # Note: We convert all objects to text before we prompt the LLM the first time.
     # The idea is that if there is an error processing one of the graphs, we get it before we prompt the LLM.
@@ -129,7 +129,7 @@ def describe_ebm(
 
     # execute the prompts
     graph_descriptions = [
-        t2ebm.backend.chat_completion(llm, msg)[-1]["content"] for msg in messages
+        t2ebm.llm.chat_completion(llm, msg)[-1]["content"] for msg in messages
     ]
 
     # combine the graph descriptions in a single string
@@ -155,4 +155,4 @@ def describe_ebm(
     )
 
     # execute the prompt and return the summary
-    return t2ebm.backend.chat_completion(llm, messages)[-1]["content"]
+    return t2ebm.llm.chat_completion(llm, messages)[-1]["content"]
