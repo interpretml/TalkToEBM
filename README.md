@@ -3,7 +3,6 @@
 ![Python Version](https://img.shields.io/badge/python-3.7%20|%203.8%20|%203.9%20|%203.10-blue)
 ![Package Version](https://img.shields.io/pypi/v/t2ebm.svg?style=flat-square)
 [![Downloads](https://pepy.tech/badge/t2ebm)](https://pepy.tech/project/t2ebm)
-![pylint Score](pylint.svg)
 <br/>
 
 > ### A Natural Language Interface to Explainable Boosting Machines
