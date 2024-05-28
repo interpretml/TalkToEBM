@@ -16,8 +16,8 @@ TalkToEBM is an open-source package that provides a natural language interface t
 Features:
 - [x] Convert EBMs and their graphs to text that can be understood by LLMs. Includes confidence intervals.
 - [x] Ask the LLM to describe and summarize individual graphs or entire models.
+- [x] Modular approach that allows to write custom prompts - ask the LLM to perform any desired task with the EBM.
 - [x] Automatic simplification of minor details in graphs to stay within the desired token limit.
-- [x] Highly modular approach that allows to write custom prompts - ask the LLM to perform any desired task with the EBM.
 
 # Installation
 
@@ -39,7 +39,7 @@ Getting the LLM to describe a graph from the model is as simple as this. Let's d
 ```python
 import t2ebm
 
-graph_description = t2ebm.describe_graph('gpt-4-turbo-2024-04-09', ebm, 0)
+t2ebm.describe_graph('gpt-4-turbo-2024-04-09', ebm, 0)
 ```
 
 > **GPT-4:** *The graph illustrates the effects of the categorical feature `HomePlanet` on a
@@ -63,17 +63,17 @@ We can give the LLM more context by providing a description of the dataset and t
 ```python
 dataset_description = """ The description of the dataset from Kaggle """
 
-y_axis_description = """The y-axis depicts contributions in log-odds towards the probability
+y_axis_descripton = """The y-axis depicts contributions in log-odds towards the probability
 that the passenger was transported to another dimension."""
 ```
 
 
 ```python
-graph_description = t2ebm.describe_graph('gpt-4-turbo-2024-04-09', 
-                                          ebm,
-                                          0, 
-                                          graph_description=graph_description,
-                                          dataset_description=dataset_description)  
+t2ebm.describe_graph('gpt-4-turbo-2024-04-09', 
+                      ebm,
+                      0, 
+                      graph_description=y_axis_descripton,
+                      dataset_description=dataset_description)  
 ```
 
 > **GPT-4:** *The graph from the Generalized Additive Model (GAM) showcases the contributions
@@ -98,9 +98,10 @@ travel and safety in this futuristic scenario.*
 Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. We can also ask for a summary in a given number of sentences.
 
 ```python
-model_description = t2ebm.llm_describe_ebm(gpt4, ebm,
-                                           dataset_description=dataset_description, 
-                                           y_axis_description=y_axis_description) 
+t2ebm.llm_describe_ebm(gpt4,
+                       ebm,
+                       dataset_description=dataset_description, 
+                       y_axis_description=y_axis_descripton) 
 ```
 
 > **GPT-4:** *The Generalized Additive Model (GAM) applied to the Spaceship Titanic dataset
@@ -187,7 +188,7 @@ print(graph_as_text)
 >    Upper Bounds (95%-Confidence Interval): {"(0.0, 36.5)": 0.966, "(36.5, 117.5)": 0.374, ..., "(3978.0, 18572.0)": -4.877}
     
 
-Given the textual representation of the graph, you can start to write your own prompts. Usually, the first prompt will ask the LLM to describe the graph. We use [guidance](https://github.com/microsoft/guidance) in order to handle sequential execution and chain-of-thought prompting.
+Given the textual representation of the graph, you can start to write your own prompts. Usually, the first prompt will ask the LLM to describe the graph. 
 
 ```python
 t2ebm.prompts.describe_graph(graph_as_text,
