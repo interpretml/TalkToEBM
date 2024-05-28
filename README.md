@@ -112,7 +112,7 @@ anomaly. Here's a condensed summary of the key findings:  1. **CryoSleep**
 likely to be transported (mean effect = 0.814) compared to those not in
 CryoSleep (mean effect = -0.447). This suggests unique interactions between the
 CryoSleep technology and the anomaly.  2. **Spa** (Feature Importance: 0.72):
-- There is a strong negative correlation between spa spending and the likelihood
+There is a strong negative correlation between spa spending and the likelihood
 of transportation, with a steep decline in likelihood as expenditures increase.
 This counterintuitive pattern points to complex, non-linear effects of luxury
 expenditures on outcomes.  3. **VRDeck** (Feature Importance: 0.63):    - Higher
