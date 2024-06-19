@@ -104,40 +104,41 @@ t2ebm.describe_ebm('gpt-4-turbo-2024-04-09',
                    y_axis_description=y_axis_descripton) 
 ```
 
-> **GPT-4:** *The Generalized Additive Model (GAM) applied to the Spaceship Titanic dataset
-has uncovered significant relationships between passenger features and the
-likelihood of being transported to an alternate dimension during a spacetime
-anomaly. Here's a condensed summary of the key findings:  1. **CryoSleep**
-(Feature Importance: 0.56):    - Passengers in CryoSleep are significantly more
-likely to be transported (mean effect = 0.814) compared to those not in
-CryoSleep (mean effect = -0.447). This suggests unique interactions between the
-CryoSleep technology and the anomaly.  2. **Spa** (Feature Importance: 0.72):
-There is a strong negative correlation between spa spending and the likelihood
-of transportation, with a steep decline in likelihood as expenditures increase.
-This counterintuitive pattern points to complex, non-linear effects of luxury
-expenditures on outcomes.  3. **VRDeck** (Feature Importance: 0.63):    - Higher
-spending on the VRDeck is associated with a lower likelihood of being
-transported, with an increasing negative effect as expenditure rises.  4.
-**RoomService** (Feature Importance: 0.48):    - Minimal initial spending on
-room service slightly increases the likelihood of being transported, but as
-spending rises, the effect becomes negatively pronounced. This indicates complex
-interactions influenced by passenger behavior or security measures.  5.
-**HomePlanet** (Feature: 0.35):    - Europa passengers are notably more likely
-to be transported (mean = 0.5678) compared to those from Earth (mean = -0.3246)
-and Mars (mean = 0.1713), suggesting differences in technology or emergency
-responses among the planets.  6. **Cabin** (Feature: 0.39):    - Cabin location
-significantly affects transportation likelihood, with notable disparities
-between cabin sides (Port vs. Starboard) on the same deck, indicating uneven
-exposure to the anomaly or structural differences in the ship.  Surprising
-Patterns: - **Age**: There's a non-linear relationship with age, where both very
-young and older seniors show higher transportation probabilities, highlighting
-age-specific dynamics in anomaly interaction. - **Destination**: Passengers to
-"55 Cancri e" have a higher transportation likelihood compared to other
-destinations, indicating unique risks associated with this route.  This GAM
-analysis provides crucial insights into the dynamics of spacetime anomalies in
-interstellar travel, emphasizing the importance of considering complex and non-
-linear interactions between features and outcomes for safety and operational
-strategies.*
+> **GPT-4:** *The Generalized Additive Model (GAM) used for analyzing the Spaceship Titanic
+anomaly provides crucial insights into factors influencing the likelihood of
+passengers being transported to an alternate dimension. Here’s a concise summary
+of the most impactful features:  1. **CryoSleep**: This feature significantly
+affects the outcome, with passengers in cryosleep more likely to be transported
+(mean effect size 0.814) compared to those who are not (mean effect -0.447).
+This suggests a unique interaction between the cryosleep state and the anomaly,
+potentially due to the location or conditions of cryosleep chambers.  2.
+**Spa**: Expenditures on spa services show a strong negative correlation with
+the likelihood of transportation, particularly at higher spending levels. The
+effect becomes extremely strong (below -5) at the highest expenditures,
+indicating a protective factor potentially linked to socioeconomic status or
+specific behaviors.  3. **VRDeck**: Similar to spa spending, expenditure on the
+VRDeck is negatively correlated with the probability of transportation,
+intensifying with higher spending. This suggests that engagement in VRDeck
+amenities might be associated with safer areas or protective behaviors on the
+ship.  4. **RoomService**: Initially, a slight increase in transportation
+likelihood is observed at very low spending levels on room service, but it
+shifts to a significant negative correlation as spending increases. High
+expenditures on room service might correlate with safer locations on the ship. 5. **HomePlanet**: Passengers from Europa are much more likely to be transported
+(mean effect 0.5678) compared to those from Earth (mean effect -0.3246) and Mars
+(mean effect 0.1713). This indicates that planetary origin, reflecting differing
+socio-economic or technological contexts, significantly influences
+susceptibility to the anomaly.  6. **Cabin**: The cabin location, particularly
+differences between Port and Starboard sides, significantly impacts the
+likelihood of transportation. For instance, Starboard side cabins, especially on
+specific decks (e.g., "C/S" with mean = 2.016), show higher positive effects.   7. **Destination**: The intended destination affects transportation likelihood,
+with passengers destined for 55 Cancri e exhibiting a higher likelihood compared
+to those heading to PSO J318.5-22 and TRAPPIST-1e. This might be influenced by
+route or operational parameters specific to each destination.  The model
+highlights the importance of understanding interactions between passenger states
+(like cryosleep), cabin locations, spending on ship amenities, and origins in
+assessing risks from spacetime anomalies. These factors play crucial roles in
+the model's predictive accuracy and offer insights for enhancing safety and
+design in future interstellar travel scenarios.*
 
 # Low-Level API: Extract Graphs from the EBM and perform custom prompts
 
