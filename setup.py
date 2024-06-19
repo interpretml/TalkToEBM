@@ -7,9 +7,14 @@ import setuptools
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
+# Read the version from the version file
+version = {}
+with open("t2ebm/version.py") as fp:
+    exec(fp.read(), version)
+
 setuptools.setup(
     name="t2ebm",
-    version="0.1.0",
+    version=version["__version__"],
     author="Sebastian Bordt, Ben Lengerich, Harsha Nori, Rich Caruana",
     author_email="sbordt@posteo.de",
     description="A Natural Language Interface to Explainable Boosting Machines",

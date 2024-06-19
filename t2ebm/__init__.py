@@ -2,7 +2,7 @@
 TalkToEBM: A Natural Language Interface to Explainable Boosting Machines
 """
 
-__version__ = "0.1.0"
+from .version import __version__
 
 # high-level functions
 from .functions import (

@@ -65,7 +65,7 @@ def describe_graph_cot(graph, num_sentences=7, **kwargs):
         {"role": "assistant", "temperature": 0.7, "max_tokens": 2000},
         {
             "role": "user",
-            "content": f"Thanks. Now please provide a brief, at most {num_sentences} sentence description of the graph. Be sure to include any important suprising patterns in the description. You can assume that the user knows that the graph is from a Generalized Additive Model (GAM).",
+            "content": f"Thanks. Now please provide a brief, at most {num_sentences} sentence description of the graph. Be sure to include any important surprising patterns in the description. You can assume that the user knows that the graph is from a Generalized Additive Model (GAM).",
         },
         {"role": "assistant", "temperature": 0.7, "max_tokens": 2000},
     ]
@@ -87,10 +87,10 @@ def summarize_ebm(
     user_msg = """Your task is to summarize a Generalized Additive Model (GAM). To perform this task, you will be given
     - The global feature importances of the different features in the model.
     - Summaries of the graphs for the different features in the model. There is exactly one graph for each feature in the model. """
-    user_msg += f"Here are the global feature importaces.\n\n{feature_importances}\n\n"
+    user_msg += f"Here are the global feature importances.\n\n{feature_importances}\n\n"
     user_msg += f"Here are the descriptions of the different graphs.\n\n{graph_descriptions}\n\n"
     if dataset_description is not None and len(dataset_description) > 0:
-        user_msg += f"Here is a description of the dataset that the model was trained on.\n\n{graph_descriptions}\n\n"
+        user_msg += f"Here is a description of the dataset that the model was trained on.\n\n{dataset_description}\n\n"
     user_msg += """Now, please provide a summary of the model.
     
 The summary should contain the most important features in the model and their effect on the outcome. Unimportant effects and features can be ignored. 
