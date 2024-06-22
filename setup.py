@@ -30,7 +30,7 @@ setuptools.setup(
     packages=["t2ebm"],
     python_requires=">=3.6",
     install_requires=[
-        "numpy",
+        "numpy>=1.14.0,<2.0.0",
         "matplotlib",
         "tiktoken",
         "openai>=1.8.0",
