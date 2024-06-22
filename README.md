@@ -22,7 +22,7 @@ Features:
 
 # Installation
 
-Python 3.7+ | Linux, Mac, Windows
+Python 3.8+ | Linux, Mac, Windows
 ```sh
 pip install t2ebm
 ```
