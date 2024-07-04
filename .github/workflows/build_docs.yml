@@ -1,0 +1,54 @@
+name: docs
+ 
+on:
+  push:
+    branches: [ main ]
+ 
+jobs:
+
+  build_docs_job:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+ 
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v4
+        with:
+           python-version: "3.11"
+        
+      - name: Install package and dependencies for building docs
+        run: |
+          sudo apt-get install pandoc
+          python -m pip install --upgrade pip
+          python -m pip install -U sphinx
+          python -m pip install sphinx-rtd-theme
+          # python -m pip install sphinxcontrib-apidoc
+          python -m pip install sphinx-autoapi
+          python -m pip install nbsphinx
+          python -m pip install pypandoc
+          pip install . 
+      - name: make the sphinx docs
+        run: |
+          make -C docs clean 
+          # sphinx-apidoc -f -o docs/source . -H Test -e -t docs/source/_templates
+          make -C docs html
+      - name: Init new repo in dist folder and commit generated files
+        run: |
+          cd docs/_build/html/
+          git init
+          touch .nojekyll
+          git add -A
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git commit -m 'deploy'
+      - name: Force push to destination branch
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: docs-build
+          force: true
+          directory: ./docs/_build/html
