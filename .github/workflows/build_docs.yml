@@ -9,6 +9,7 @@ jobs:
   build_docs_job:
     runs-on: ubuntu-latest
     env:
+      OPENAI_API_KEY: "TESTAPIKEY"
       GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
  
     steps:
