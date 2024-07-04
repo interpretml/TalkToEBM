@@ -1,7 +1,7 @@
 """
-TalkToEBM structures conversations in a generic message format that can be executed with different LLMs.
+TalkToEBM structures conversations in a generic OpenAI message format that can be executed with different LLMs.
 
-To use a custom LLM, simply implement AbstractChatModel. 
+We interface the LLM via the simple class AbstractChatModel. To use your own LLM, simply implement the chat_completion method in a subclass.
 """
 
 from dataclasses import dataclass
@@ -119,7 +119,7 @@ def openai_setup(model: str, azure: bool = False, *args, **kwargs):
 
 
 def setup(model: Union[AbstractChatModel, str]):
-    """Setup for a chat model. If the input is a string, we assume that it is the name of an OpenAI model."""
+    """Setup a chat model. If the input is a string, we assume that it is the name of an OpenAI model."""
     if isinstance(model, str):
         model = openai_setup(model)
     return model

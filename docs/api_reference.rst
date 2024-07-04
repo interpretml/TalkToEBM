@@ -26,7 +26,7 @@ Interface to the LLM
 --------------------
 
 .. automodule:: t2ebm.llm
-   :members: AbstractChatModel, OpenAIChatModel, openai_setup, setup, chat_completion
+   :members: AbstractChatModel, OpenAIChatModel, openai_setup, chat_completion
    :show-inheritance:
 
 

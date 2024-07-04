@@ -1,5 +1,5 @@
 """
-TalkToEBM: A Natural Language Interface to Explainable Boosting Machines
+TalkToEBM: A Natural Language Interface to Explainable Boosting Machines.
 """
 
 import inspect
@@ -24,7 +24,15 @@ from interpret.glassbox import (
 ###################################################################################################
 
 
-def feature_importances_to_text(ebm):
+def feature_importances_to_text(ebm: Union[ExplainableBoostingClassifier, ExplainableBoostingRegressor]):
+    """Convert the feature importances of an EBM to text.
+
+    Args:
+        ebm (_type_): The EBM.
+
+    Returns:
+        str: Textual representation of the feature importances.
+    """
     feature_importances = ""
     for feature_idx, feature_name in enumerate(ebm.feature_names_in_):
         feature_importances += (
@@ -45,14 +53,18 @@ def describe_graph(
     num_sentences: int = 7,
     **kwargs,
 ):
-    """Ask the LLM to describe a graph from an EBM, using chain-of-thought reasoning.
+    """Ask the LLM to describe a graph. Uses chain-of-thought reasoning.
 
-    This function accepts arbitrary keyword arguments that are passed to the corresponding lower-level functions.
+    The function accepts additional keyword arguments that are passed to extract_graph, graph_to_text, and describe_graph_cot.
 
-    :param ebm:
-    :param feature_index:
-    :param kwargs: see llm_describe_graph
-    :return: A summary of the graph in at most num_sentences sentences.
+    Args:
+        llm (Union[AbstractChatModel, str]): The LLM.
+        ebm (Union[ExplainableBoostingClassifier, ExplainableBoostingRegressor]): The EBM.
+        feature_index (int): The index of the feature to describe.
+        num_sentences (int, optional): The desired number of senteces for the description. Defaults to 7.
+
+    Returns:
+        str:  The description of the graph.
     """
 
     # llm setup
@@ -91,7 +103,18 @@ def describe_ebm(
     num_sentences: int = 30,
     **kwargs,
 ):
-    """Ask the LLM to describe the LLM in at most {num_sentences} sentences."""
+    """Ask the LLM to describe an EBM. 
+
+    The function accepts additional keyword arguments that are passed to extract_graph, graph_to_text, and describe_graph_cot.
+
+    Args:
+        llm (Union[AbstractChatModel, str]): The LLM.
+        ebm (Union[ExplainableBoostingClassifier, ExplainableBoostingRegressor]): The EBM.
+        num_sentences (int, optional): The desired number of senteces for the description. Defaults to 30.
+
+    Returns:
+        str: The description of the EBM.
+    """
 
     # llm setup
     llm = t2ebm.llm.setup(llm)

@@ -1,12 +1,19 @@
 """
 Prompts that ask the LLM to perform tasks with Graphs and EBMs.
 
-Functions either return a string or a sequene of messages / desired responses in the openai message format.
+Functions either return a string or a sequene of messages / desired responses in the OpenAI message format.
 """
 
 
 def graph_system_msg(expert_description="an expert statistician and data scientist"):
-    """Instruct the LLM to work with the graphs of a GAM."""
+    """A system message that instructs the LLM to work with the graphs of an EBM.
+
+    Args:
+        expert_description (str, optional): Description of the expert that we want the LLM to be. Defaults to "an expert statistician and data scientist".
+
+    Returns:
+        str: The system message.
+    """
     return f"You are {expert_description}. You interpret global explanations produced by a Generalized Additive Model (GAM). You answer all questions to the best of your ability, relying on the graphs provided by the user, any other information you are given, and your knowledge about the real world."
 
 
@@ -18,12 +25,15 @@ def describe_graph(
 ):
     """Prompt the LLM to describe a graph. This is intended to be the first prompt in a conversation about a graph.
 
-    :param task_description: The final user message that instructs the LLM (default: 'Please describe the general pattern of the graph.')
-    :param y_axis_description: description of the outcome
-    :param dataset_description: description of the dataset
+    Args:
+        graph (str): The graph to describe (in JSON format, obtained from graph_to_text).
+        graph_description (str, optional): Additional description of the graph (e.g. "The y-axis of the graph depicts the probability of sucess."). Defaults to "".
+        dataset_description (str, optional): Additional description of the dataset (e.g. "The dataset is a Pneumonia dataset collected by [...]"). Defaults to "".
+        task_description (str, optional): A final prompt to instruct the LLM. Defaults to "Please describe the general pattern of the graph.".
 
-    :return: str
-    """
+    Returns:
+        str: The prompt to describe the graph.
+    """   
     prompt = """Below is the graph of a Generalized Additive Model (GAM). The graph is presented as a JSON object with keys representing the x-axis and values representing the y-axis. For continuous features, the keys are intervals that represent ranges where the function predicts the same value. For categorical features, each key represents a possible value that the feature can take.
     
 The graph is provided in the following format:
@@ -52,7 +62,8 @@ The graph is provided in the following format:
 def describe_graph_cot(graph, num_sentences=7, **kwargs):
     """Use chain-of-thought reasoning to elicit a description of a graph in at most {num_sentences} sentences.
 
-    Return: messages in openai format.
+    Returns:
+        Messages in OpenAI format.
     """
     return [
         {"role": "system", "content": graph_system_msg()},
@@ -78,6 +89,11 @@ def summarize_ebm(
     dataset_description="",
     num_sentences: int = None,
 ):
+    """Prompt the LLM to summarize a Generalized Additive Model (GAM).
+
+    Returns:
+        Messages in OpenAI format.
+    """
     messages = [
         {
             "role": "system",

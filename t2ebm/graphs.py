@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import typing
+from typing import Union
 
 import matplotlib.pyplot as plt
 import numpy as np
@@ -7,6 +8,11 @@ import scipy
 import json
 
 from interpret.glassbox._ebm._utils import convert_to_intervals
+
+from interpret.glassbox import (
+    ExplainableBoostingClassifier,
+    ExplainableBoostingRegressor,
+)
 
 from t2ebm.utils import num_tokens_from_string_
 
@@ -30,7 +36,7 @@ class EBMGraph:
 
 
 def extract_graph(
-    ebm,
+    ebm : Union[ExplainableBoostingClassifier, ExplainableBoostingRegressor],
     feature_index :int,
     normalization="none",
     use_feature_bounds=True,
@@ -199,7 +205,7 @@ def graph_to_text(
     The function takes care of a variety of different formatting issues that can arise in the process of converting a graph to text.
 
     Args:   
-        graph (EBMGraph): _description_
+        graph (EBMGraph): The graph.
         include_description (bool, optional): Whether to include a short descriptive preamble that describes the graph to the LLM. Defaults to True.
         feature_format (_type_, optional): The format of the feature (continuous, cateorical, boolean). Defaults to None (auto-detect).
         x_axis_precision (_type_, optional): The precision of the values on the x-axis. Defaults to None.
