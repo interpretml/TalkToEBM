@@ -1,7 +1,8 @@
 # TalkToEBM
-![License](https://img.shields.io/github/license/interpretml/TalkToEBM.svg?style=flat-square)
+[![Documentation](https://img.shields.io/badge/Documentation-View-blue)](http://interpret.ml/TalkToEBM/api_reference.html)
 ![python](https://img.shields.io/badge/python-3.8+-blue)
 ![Package Version](https://img.shields.io/pypi/v/t2ebm.svg?style=flat-square)
+![License](https://img.shields.io/github/license/interpretml/TalkToEBM.svg?style=flat-square)
 [![tests](https://github.com/interpretml/TalkToEBM/actions/workflows/run-pytest.yml/badge.svg)](https://github.com/interpretml/TalkToEBM/actions/workflows/run-pytest.yml)
 [![Downloads](https://pepy.tech/badge/t2ebm)](https://pepy.tech/project/t2ebm)
 <br/>
@@ -28,6 +29,8 @@ pip install t2ebm
 ```
 
 # High-Level API: Pass the EBM to the LLM
+
+Here, we give an overview of high-level API functions that ask the LLM to describe graphs and LLMs. These functions take care of the prompts for you. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
 
 We have trained an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview).
 
@@ -142,6 +145,8 @@ the model's predictive accuracy and offer insights for enhancing safety and
 design in future interstellar travel scenarios.*
 
 # Low-Level API: Extract Graphs from the EBM and perform custom prompts
+
+Here, we give an overview of low-level API functions that covert graphs to text. We also describe some basic prompt structures. You should use the functions described here if you want to write your own prompts based on the graphs of GAMs. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
 
 ```python
 import t2ebm.graphs as graphs
