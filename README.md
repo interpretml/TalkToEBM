@@ -16,7 +16,7 @@
 TalkToEBM is an open-source package that provides a natural language interface to [Explainable Boosting Machines (EBMs)](https://github.com/interpretml/interpret). With this package, you can convert the graphs of Explainable Boosting Machines to text and generate prompts for LLMs. We also have higher-level functions that directly ask the LLM to describe entire models. This package is under active development, so the current API is not guaranteed to stay stable.
 
 Features:
-- [x] Convert EBMs and their graphs to text that can be understood by LLMs. Includes confidence intervals.
+- [x] Convert EBMs and their graphs to text that can be understood by LLMs.
 - [x] Ask the LLM to describe and summarize individual graphs or entire models.
 - [x] Modular approach that allows to write custom prompts - ask the LLM to perform any desired task with the EBM.
 - [x] Automatic simplification of minor details in graphs to stay within the desired token limit.
@@ -30,15 +30,15 @@ pip install t2ebm
 
 # High-Level API: Pass the EBM to the LLM
 
-Here, we give an overview of high-level API functions that ask the LLM to describe graphs and LLMs. These functions take care of the prompts for you. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
+Here, we give an overview of high-level API functions that ask the LLM to describe graphs and EBMs. These functions take care of the prompts for you. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
 
-We have trained an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview).
+First, we need to train a model. Here, we train an ```ExplainableBoostingClassifier``` on the Kaggle [Spaceship Titanic Dataset](https://www.kaggle.com/competitions/spaceship-titanic/overview).
 
 ```python
 ebm = ExplainableBoostingClassifier(feature_names=feature_names)
 ebm.fit(X_train, y_train)
 ```
-Getting the LLM to describe a graph from the model is as simple as this. Let's describe the graph for feature 0, 'Home Planet'.
+We can now ask an LLM to describe a graph from the model. Asking the LLM to describe the graph for feature 0, 'Home Planet', is as simple as this:
 
 ```python
 import t2ebm
@@ -62,7 +62,7 @@ Understanding these patterns might require further investigation into the
 dataset's characteristics, including possible biases or the nature of the
 dependent variable.*
 
-We can give the LLM more context by providing a description of the dataset and the outcome. This allows the LLM to talk about the spacetime anomaly.
+Note that the LLM does not know about the dataset on which the model was trained. However, we can provide this information. This allows the LLM to talk about the outcome and to describe the graph in the context of the overall dataset. 
 
 ```python
 dataset_description = """ The description of the dataset from Kaggle """
@@ -99,7 +99,7 @@ disturbances. These findings highlight planet-based differences in
 susceptibility to extraordinary events, revealing insights into interplanetary
 travel and safety in this futuristic scenario.*
 
-Instead of describing individual graphs, we can also ask the LLM to summarize the entire model. We can also ask for a summary in a given number of sentences.
+Instead of describing individual graphs, we can also ask the LLM to summarize the entire model.
 
 ```python
 t2ebm.describe_ebm('gpt-4-turbo-2024-04-09',
@@ -111,30 +111,36 @@ t2ebm.describe_ebm('gpt-4-turbo-2024-04-09',
 > **GPT-4:** *The Generalized Additive Model (GAM) used for analyzing the Spaceship Titanic
 anomaly provides crucial insights into factors influencing the likelihood of
 passengers being transported to an alternate dimension. Here’s a concise summary
-of the most impactful features:  1. **CryoSleep**: This feature significantly
+of the most impactful features:
+>  1. **CryoSleep**: This feature significantly
 affects the outcome, with passengers in cryosleep more likely to be transported
 (mean effect size 0.814) compared to those who are not (mean effect -0.447).
 This suggests a unique interaction between the cryosleep state and the anomaly,
-potentially due to the location or conditions of cryosleep chambers.  2.
-**Spa**: Expenditures on spa services show a strong negative correlation with
+potentially due to the location or conditions of cryosleep chambers.
+>  2. **Spa**: Expenditures on spa services show a strong negative correlation with
 the likelihood of transportation, particularly at higher spending levels. The
 effect becomes extremely strong (below -5) at the highest expenditures,
 indicating a protective factor potentially linked to socioeconomic status or
-specific behaviors.  3. **VRDeck**: Similar to spa spending, expenditure on the
+specific behaviors.
+>  3. **VRDeck**: Similar to spa spending, expenditure on the
 VRDeck is negatively correlated with the probability of transportation,
 intensifying with higher spending. This suggests that engagement in VRDeck
 amenities might be associated with safer areas or protective behaviors on the
-ship.  4. **RoomService**: Initially, a slight increase in transportation
+ship.
+>  4. **RoomService**: Initially, a slight increase in transportation
 likelihood is observed at very low spending levels on room service, but it
 shifts to a significant negative correlation as spending increases. High
-expenditures on room service might correlate with safer locations on the ship. 5. **HomePlanet**: Passengers from Europa are much more likely to be transported
+expenditures on room service might correlate with safer locations on the ship.
+>  5. **HomePlanet**: Passengers from Europa are much more likely to be transported
 (mean effect 0.5678) compared to those from Earth (mean effect -0.3246) and Mars
 (mean effect 0.1713). This indicates that planetary origin, reflecting differing
 socio-economic or technological contexts, significantly influences
-susceptibility to the anomaly.  6. **Cabin**: The cabin location, particularly
+susceptibility to the anomaly.
+>  6. **Cabin**: The cabin location, particularly
 differences between Port and Starboard sides, significantly impacts the
 likelihood of transportation. For instance, Starboard side cabins, especially on
-specific decks (e.g., "C/S" with mean = 2.016), show higher positive effects.   7. **Destination**: The intended destination affects transportation likelihood,
+specific decks (e.g., "C/S" with mean = 2.016), show higher positive effects.
+>  7. **Destination**: The intended destination affects transportation likelihood,
 with passengers destined for 55 Cancri e exhibiting a higher likelihood compared
 to those heading to PSO J318.5-22 and TRAPPIST-1e. This might be influenced by
 route or operational parameters specific to each destination.  The model
@@ -146,12 +152,12 @@ design in future interstellar travel scenarios.*
 
 # Low-Level API: Extract Graphs from the EBM and perform custom prompts
 
-Here, we give an overview of low-level API functions that covert graphs to text. We also describe some basic prompt structures. You should use the functions described here if you want to write your own prompts based on the graphs of GAMs. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
+Most likely, you want the LLM to perform a custom task with the model. For example, you might want to ask the LLM to find [surprising and counter-intuitive patterns in the graphs](https://arxiv.org/abs/2308.01157). For this, we provide a low-level API that allows us to convert the graph of EMBs to text. We also provide some basic prompt structures. You should use the functions described here if you want to write your own prompts based on the graphs of EBMs. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
 
 ```python
 import t2ebm.graphs as graphs
 ```
-We have a simple datastructure for graphs, and some useful operations on them
+We have a simple datastructure for graphs. Here, we extract a graph from an EBM and plot it:
 
 ```python
 graph = graphs.extract_graph(ebm, 9)  # feature 9, 'Spa'
