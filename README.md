@@ -183,7 +183,7 @@ graphs.plot_graph(graphs.extract_graph(ebm, 0)) # home planet
 
 <img src="images/Spaceship%20Titanic_22_0.png" alt="drawing" width="400"/>
 
-Before we can send a graph to an LLM, we need to convert it to text. The function ``graph_to_text'' takes care of this.
+Before we can send a graph to an LLM, we need to convert it to text. The function ```graph_to_text``` takes care of this.
 
 ```python
 graph_as_text = graphs.graph_to_text(graph, max_tokens=1000)
@@ -200,7 +200,7 @@ print(graph_as_text)
 > > 
 >    Upper Bounds (95%-Confidence Interval): {"(0.0, 36.5)": 0.966, "(36.5, 117.5)": 0.374, ..., "(3978.0, 18572.0)": -4.877}
     
-Given a graph's textual representation, we can embed it in a prompt. The function ``describe_graph'' provides a simple prompt template that can be used as a first step to build more complex prompts. 
+Given a graph's textual representation, we can embed it in a prompt. The function ```describe_graph``` provides a simple prompt template that can be used as a first step to build more complex prompts. 
 
 ```python
 t2ebm.prompts.describe_graph(graph_as_text,
