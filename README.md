@@ -152,7 +152,7 @@ design in future interstellar travel scenarios.*
 
 # Low-Level API: Extract Graphs from the EBM and perform custom prompts
 
-Most likely, you want the LLM to perform a custom task with the model. For example, you might want to ask the LLM to find [surprising and counter-intuitive patterns in the graphs](https://arxiv.org/abs/2308.01157). For this, we provide a low-level API that allows us to convert the graph of EMBs to text. We also provide some basic prompt structures. You should use the functions described here if you want to write your own prompts based on the graphs of EBMs. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
+Most likely, you want the LLM to perform a custom task with the model. For example, you might want to ask the LLM to find [surprising and counter-intuitive patterns in the graphs](https://arxiv.org/abs/2308.01157). For this, we provide a low-level API that allows us to convert the graphs of EMBs to text. We also provide some basic prompt structures. You should use the functions described here if you want to write your own prompts based on the graphs of EBMs. The API Reference can be found [here](http://interpret.ml/TalkToEBM/api_reference.html).
 
 ```python
 import t2ebm.graphs as graphs
@@ -183,7 +183,7 @@ graphs.plot_graph(graphs.extract_graph(ebm, 0)) # home planet
 
 <img src="images/Spaceship%20Titanic_22_0.png" alt="drawing" width="400"/>
 
-We have to convert graphs to text before passing them to the LLM
+Before we can send a graph to an LLM, we need to convert it to text. The function ``graph_to_text'' takes care of this.
 
 ```python
 graph_as_text = graphs.graph_to_text(graph, max_tokens=1000)
@@ -200,8 +200,7 @@ print(graph_as_text)
 > > 
 >    Upper Bounds (95%-Confidence Interval): {"(0.0, 36.5)": 0.966, "(36.5, 117.5)": 0.374, ..., "(3978.0, 18572.0)": -4.877}
     
-
-Given the textual representation of the graph, you can start to write your own prompts. Usually, the first prompt will ask the LLM to describe the graph. 
+Given a graph's textual representation, we can embed it in a prompt. The function ``describe_graph'' provides a simple prompt template that can be used as a first step to build more complex prompts. 
 
 ```python
 t2ebm.prompts.describe_graph(graph_as_text,
@@ -239,6 +238,8 @@ Here is a description of the dataset that the model was trained on:
 
 {Please summarize the graph. Pay special attention to run 'pip install t2ebm'}
 ```
+
+With this, you are ready to write your own prompts and ask the LLM to perform tasks with the graph. 
 
 # Citation
 
