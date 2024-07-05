@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>API Reference &mdash; TalkToEBM 0.1.2 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=80d5e7a1" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=19f00094" />
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script src="_static/jquery.js?v=5d32c60e"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+        <script src="_static/documentation_options.js?v=92734c54"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
+        <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+        <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Welcome to TalkToEBM’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            TalkToEBM
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">API Reference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-t2ebm">High-Level API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.describe_ebm"><code class="docutils literal notranslate"><span class="pre">describe_ebm()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.describe_graph"><code class="docutils literal notranslate"><span class="pre">describe_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.feature_importances_to_text"><code class="docutils literal notranslate"><span class="pre">feature_importances_to_text()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-t2ebm.graphs">Extract graphs from EBM’s and convert them to text</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.graphs.EBMGraph"><code class="docutils literal notranslate"><span class="pre">EBMGraph</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.graphs.extract_graph"><code class="docutils literal notranslate"><span class="pre">extract_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.graphs.graph_to_text"><code class="docutils literal notranslate"><span class="pre">graph_to_text()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.graphs.plot_graph"><code class="docutils literal notranslate"><span class="pre">plot_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.graphs.simplify_graph"><code class="docutils literal notranslate"><span class="pre">simplify_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.graphs.text_to_graph"><code class="docutils literal notranslate"><span class="pre">text_to_graph()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-t2ebm.prompts">Prompt templates</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.prompts.describe_graph"><code class="docutils literal notranslate"><span class="pre">describe_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.prompts.describe_graph_cot"><code class="docutils literal notranslate"><span class="pre">describe_graph_cot()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.prompts.graph_system_msg"><code class="docutils literal notranslate"><span class="pre">graph_system_msg()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.prompts.summarize_ebm"><code class="docutils literal notranslate"><span class="pre">summarize_ebm()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#module-t2ebm.llm">Interface to the LLM</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.llm.AbstractChatModel"><code class="docutils literal notranslate"><span class="pre">AbstractChatModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#t2ebm.llm.AbstractChatModel.chat_completion"><code class="docutils literal notranslate"><span class="pre">AbstractChatModel.chat_completion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.llm.OpenAIChatModel"><code class="docutils literal notranslate"><span class="pre">OpenAIChatModel</span></code></a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#t2ebm.llm.OpenAIChatModel.chat_completion"><code class="docutils literal notranslate"><span class="pre">OpenAIChatModel.chat_completion()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.llm.chat_completion"><code class="docutils literal notranslate"><span class="pre">chat_completion()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#t2ebm.llm.openai_setup"><code class="docutils literal notranslate"><span class="pre">openai_setup()</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">TalkToEBM</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">API Reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/api_reference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="api-reference">
+<h1>API Reference<a class="headerlink" href="#api-reference" title="Link to this heading"></a></h1>
+<section id="module-t2ebm">
+<span id="high-level-api"></span><h2>High-Level API<a class="headerlink" href="#module-t2ebm" title="Link to this heading"></a></h2>
+<p>TalkToEBM: A Natural Language Interface to Explainable Boosting Machines</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.describe_ebm">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.</span></span><span class="sig-name descname"><span class="pre">describe_ebm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#t2ebm.llm.AbstractChatModel" title="t2ebm.llm.AbstractChatModel"><span class="pre">AbstractChatModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ebm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExplainableBoostingClassifier</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ExplainableBoostingRegressor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sentences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">30</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.describe_ebm" title="Link to this definition"></a></dt>
+<dd><p>Ask the LLM to describe an EBM.</p>
+<p>The function accepts additional keyword arguments that are passed to extract_graph, graph_to_text, and describe_graph_cot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#t2ebm.llm.AbstractChatModel" title="t2ebm.llm.AbstractChatModel"><em>AbstractChatModel</em></a><em>, </em><em>str</em><em>]</em>) – The LLM.</p></li>
+<li><p><strong>ebm</strong> (<em>Union</em><em>[</em><em>ExplainableBoostingClassifier</em><em>, </em><em>ExplainableBoostingRegressor</em><em>]</em>) – The EBM.</p></li>
+<li><p><strong>num_sentences</strong> (<em>int</em><em>, </em><em>optional</em>) – The desired number of senteces for the description. Defaults to 30.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The description of the EBM.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.describe_graph">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.</span></span><span class="sig-name descname"><span class="pre">describe_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#t2ebm.llm.AbstractChatModel" title="t2ebm.llm.AbstractChatModel"><span class="pre">AbstractChatModel</span></a><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ebm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExplainableBoostingClassifier</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ExplainableBoostingRegressor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sentences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.describe_graph" title="Link to this definition"></a></dt>
+<dd><p>Ask the LLM to describe a graph. Uses chain-of-thought reasoning.</p>
+<p>The function accepts additional keyword arguments that are passed to extract_graph, graph_to_text, and describe_graph_cot.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>llm</strong> (<em>Union</em><em>[</em><a class="reference internal" href="#t2ebm.llm.AbstractChatModel" title="t2ebm.llm.AbstractChatModel"><em>AbstractChatModel</em></a><em>, </em><em>str</em><em>]</em>) – The LLM.</p></li>
+<li><p><strong>ebm</strong> (<em>Union</em><em>[</em><em>ExplainableBoostingClassifier</em><em>, </em><em>ExplainableBoostingRegressor</em><em>]</em>) – The EBM.</p></li>
+<li><p><strong>feature_index</strong> (<em>int</em>) – The index of the feature to describe.</p></li>
+<li><p><strong>num_sentences</strong> (<em>int</em><em>, </em><em>optional</em>) – The desired number of senteces for the description. Defaults to 7.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The description of the graph.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.feature_importances_to_text">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.</span></span><span class="sig-name descname"><span class="pre">feature_importances_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ebm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExplainableBoostingClassifier</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ExplainableBoostingRegressor</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.feature_importances_to_text" title="Link to this definition"></a></dt>
+<dd><p>Convert the feature importances of an EBM to text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>ebm</strong> (<em>_type_</em>) – The EBM.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Textual representation of the feature importances.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-t2ebm.graphs">
+<span id="extract-graphs-from-ebm-s-and-convert-them-to-text"></span><h2>Extract graphs from EBM’s and convert them to text<a class="headerlink" href="#module-t2ebm.graphs" title="Link to this heading"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="t2ebm.graphs.EBMGraph">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">t2ebm.graphs.</span></span><span class="sig-name descname"><span class="pre">EBMGraph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_vals</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scores</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stds</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.graphs.EBMGraph" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>A datastructure for the graphs of Explainable Boosting Machines.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.graphs.extract_graph">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.graphs.</span></span><span class="sig-name descname"><span class="pre">extract_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ebm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">ExplainableBoostingClassifier</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ExplainableBoostingRegressor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_index</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalization</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'none'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_feature_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.graphs.extract_graph" title="Link to this definition"></a></dt>
+<dd><p>Extract the graph of a feature from an Explainable Boosting Machine.</p>
+<p>This is a low-level function. It does not return the final format in which the graph is presented to the LLM.</p>
+<p>The purpose of this function is to extract the graph from the interals of the EBM and return it in a format that is easy to work with.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ebm</strong> (<em>_type_</em>) – The EBM.</p></li>
+<li><p><strong>feature_index</strong> (<em>int</em>) – The index of the feature in the EBM.</p></li>
+<li><p><strong>normalization</strong> (<em>str</em><em>, </em><em>optional</em>) – How to normalize the graph (shift on the y-axis). Possible values are: ‘mean’, ‘min’, ‘none’. Defaults to “none”.</p></li>
+<li><p><strong>use_feature_bounds</strong> (<em>bool</em><em>, </em><em>optional</em>) – If True, the first and last x-axis bins are the min and max values of the feature stored in the EBM. If false, the first and last value are -inf and inf, respectively. Defaults to True.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If an error occurs.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The graph.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p><a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph">EBMGraph</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.graphs.graph_to_text">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.graphs.</span></span><span class="sig-name descname"><span class="pre">graph_to_text</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph"><span class="pre">EBMGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">feature_format</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_axis_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_axis_precision</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'auto'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_bounds</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">confidence_level</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.95</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">3000</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.graphs.graph_to_text" title="Link to this definition"></a></dt>
+<dd><p>Convert an EBMGraph to text. This is the text that we then pass to the LLM.</p>
+<p>The function takes care of a variety of different formatting issues that can arise in the process of converting a graph to text.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph"><em>EBMGraph</em></a>) – The graph.</p></li>
+<li><p><strong>include_description</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to include a short descriptive preamble that describes the graph to the LLM. Defaults to True.</p></li>
+<li><p><strong>feature_format</strong> (<em>_type_</em><em>, </em><em>optional</em>) – The format of the feature (continuous, cateorical, boolean). Defaults to None (auto-detect).</p></li>
+<li><p><strong>x_axis_precision</strong> (<em>_type_</em><em>, </em><em>optional</em>) – The precision of the values on the x-axis. Defaults to None.</p></li>
+<li><p><strong>y_axis_precision</strong> (<em>str</em><em>, </em><em>optional</em>) – The precision of the values on the x-axis. Defaults to “auto”.</p></li>
+<li><p><strong>confidence_bounds</strong> (<em>bool</em><em>, </em><em>optional</em>) – Whether to inlcude confidence bounds. Defaults to True.</p></li>
+<li><p><strong>confidence_level</strong> (<em>float</em><em>, </em><em>optional</em>) – The desired confidence level of the bounds. Defaults to 0.95.</p></li>
+<li><p><strong>max_tokens</strong> (<em>int</em><em>, </em><em>optional</em>) – The maximum number of tokens that the textual description of the graph can have. The function simplifies the graph so to fit into this token limit. Defaults to 3000.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>Exception</strong> – If an error occurs.</p>
+</dd>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>The textual representation of the graph.</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.graphs.plot_graph">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.graphs.</span></span><span class="sig-name descname"><span class="pre">plot_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph"><span class="pre">EBMGraph</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.graphs.plot_graph" title="Link to this definition"></a></dt>
+<dd><p>Plot a graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>graph</strong> (<a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph"><em>EBMGraph</em></a>) – The graph.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.graphs.simplify_graph">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.graphs.</span></span><span class="sig-name descname"><span class="pre">simplify_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph"><span class="pre">EBMGraph</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">min_variation_per_cent</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.graphs.simplify_graph" title="Link to this definition"></a></dt>
+<dd><p>Simplifies a graph. Removes redundant (flat) bins from the graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph"><em>EBMGraph</em></a>) – The graph.</p></li>
+<li><p><strong>min_variation_per_cent</strong> (<em>float</em><em>, </em><em>optional</em>) – Parameter that controlls the degree of simplification. If min_variation_per_cent&gt;0, the function simplifies the graph by removing bins that correspond to a less that min_variation_per_cent change in the score, considering the overal min/max difference of score for the feature as 100%. Defaults to 0.0.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The simplified graph.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference internal" href="#t2ebm.graphs.EBMGraph" title="t2ebm.graphs.EBMGraph">EBMGraph</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.graphs.text_to_graph">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.graphs.</span></span><span class="sig-name descname"><span class="pre">text_to_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.graphs.text_to_graph" title="Link to this definition"></a></dt>
+<dd><p>Convert  the textual representation of a graph back to an EBMGraph.</p>
+</dd></dl>
+
+</section>
+<section id="module-t2ebm.prompts">
+<span id="prompt-templates"></span><h2>Prompt templates<a class="headerlink" href="#module-t2ebm.prompts" title="Link to this heading"></a></h2>
+<p>Prompts that ask the LLM to perform tasks with Graphs and EBMs.</p>
+<p>Functions either return a string or a sequene of messages / desired responses in the OpenAI message format.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.prompts.describe_graph">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.prompts.</span></span><span class="sig-name descname"><span class="pre">describe_graph</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">task_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'Please</span> <span class="pre">describe</span> <span class="pre">the</span> <span class="pre">general</span> <span class="pre">pattern</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">graph.'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.prompts.describe_graph" title="Link to this definition"></a></dt>
+<dd><p>Prompt the LLM to describe a graph. This is intended to be the first prompt in a conversation about a graph.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>graph</strong> (<em>str</em>) – The graph to describe (in JSON format, obtained from graph_to_text).</p></li>
+<li><p><strong>graph_description</strong> (<em>str</em><em>, </em><em>optional</em>) – Additional description of the graph (e.g. “The y-axis of the graph depicts the probability of sucess.”). Defaults to “”.</p></li>
+<li><p><strong>dataset_description</strong> (<em>str</em><em>, </em><em>optional</em>) – Additional description of the dataset (e.g. “The dataset is a Pneumonia dataset collected by […]”). Defaults to “”.</p></li>
+<li><p><strong>task_description</strong> (<em>str</em><em>, </em><em>optional</em>) – A final prompt to instruct the LLM. Defaults to “Please describe the general pattern of the graph.”.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The prompt to describe the graph.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.prompts.describe_graph_cot">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.prompts.</span></span><span class="sig-name descname"><span class="pre">describe_graph_cot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">graph</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sentences</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">7</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.prompts.describe_graph_cot" title="Link to this definition"></a></dt>
+<dd><p>Use chain-of-thought reasoning to elicit a description of a graph in at most {num_sentences} sentences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Messages in OpenAI format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.prompts.graph_system_msg">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.prompts.</span></span><span class="sig-name descname"><span class="pre">graph_system_msg</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">expert_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'an</span> <span class="pre">expert</span> <span class="pre">statistician</span> <span class="pre">and</span> <span class="pre">data</span> <span class="pre">scientist'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.prompts.graph_system_msg" title="Link to this definition"></a></dt>
+<dd><p>A system message that instructs the LLM to work with the graphs of an EBM.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>expert_description</strong> (<em>str</em><em>, </em><em>optional</em>) – Description of the expert that we want the LLM to be. Defaults to “an expert statistician and data scientist”.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The system message.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.prompts.summarize_ebm">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.prompts.</span></span><span class="sig-name descname"><span class="pre">summarize_ebm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">feature_importances</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_descriptions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">expert_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'an</span> <span class="pre">expert</span> <span class="pre">statistician</span> <span class="pre">and</span> <span class="pre">data</span> <span class="pre">scientist'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset_description</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">''</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_sentences</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.prompts.summarize_ebm" title="Link to this definition"></a></dt>
+<dd><p>Prompt the LLM to summarize a Generalized Additive Model (GAM).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Messages in OpenAI format.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-t2ebm.llm">
+<span id="interface-to-the-llm"></span><h2>Interface to the LLM<a class="headerlink" href="#module-t2ebm.llm" title="Link to this heading"></a></h2>
+<p>TalkToEBM structures conversations in a generic OpenAI message format that can be executed with different LLMs.</p>
+<p>We interface the LLM via the simple class AbstractChatModel. To use your own LLM, simply implement the chat_completion method in a subclass.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="t2ebm.llm.AbstractChatModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">t2ebm.llm.</span></span><span class="sig-name descname"><span class="pre">AbstractChatModel</span></span><a class="headerlink" href="#t2ebm.llm.AbstractChatModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="t2ebm.llm.AbstractChatModel.chat_completion">
+<span class="sig-name descname"><span class="pre">chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.llm.AbstractChatModel.chat_completion" title="Link to this definition"></a></dt>
+<dd><p>Send a query to a chat model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – The messages to send to the model. We use the OpenAI format.</p></li>
+<li><p><strong>temperature</strong> – The sampling temperature.</p></li>
+<li><p><strong>max_tokens</strong> – The maximum number of tokens to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="t2ebm.llm.OpenAIChatModel">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">t2ebm.llm.</span></span><span class="sig-name descname"><span class="pre">OpenAIChatModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.llm.OpenAIChatModel" title="Link to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="#t2ebm.llm.AbstractChatModel" title="t2ebm.llm.AbstractChatModel"><code class="xref py py-class docutils literal notranslate"><span class="pre">AbstractChatModel</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="t2ebm.llm.OpenAIChatModel.chat_completion">
+<span class="sig-name descname"><span class="pre">chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">messages</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temperature</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_tokens</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.llm.OpenAIChatModel.chat_completion" title="Link to this definition"></a></dt>
+<dd><p>Send a query to a chat model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>messages</strong> – The messages to send to the model. We use the OpenAI format.</p></li>
+<li><p><strong>temperature</strong> – The sampling temperature.</p></li>
+<li><p><strong>max_tokens</strong> – The maximum number of tokens to generate.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>The model response.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>str</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.llm.chat_completion">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.llm.</span></span><span class="sig-name descname"><span class="pre">chat_completion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">llm</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><a class="reference internal" href="#t2ebm.llm.AbstractChatModel" title="t2ebm.llm.AbstractChatModel"><span class="pre">AbstractChatModel</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">messages</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.llm.chat_completion" title="Link to this definition"></a></dt>
+<dd><p>Execute a sequence of user and assistant messages with an AbstractChatModel.</p>
+<p>Sends multiple individual messages to the AbstractChatModel.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="t2ebm.llm.openai_setup">
+<span class="sig-prename descclassname"><span class="pre">t2ebm.llm.</span></span><span class="sig-name descname"><span class="pre">openai_setup</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">azure</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#t2ebm.llm.openai_setup" title="Link to this definition"></a></dt>
+<dd><p>Setup an OpenAI language model.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>model</strong> – The name of the model (e.g. “gpt-3.5-turbo-0613”).</p></li>
+<li><p><strong>azure</strong> – If true, use a model deployed on azure.</p></li>
+</ul>
+</dd>
+</dl>
+<p>This function uses the following environment variables:</p>
+<ul class="simple">
+<li><p>OPENAI_API_KEY</p></li>
+<li><p>OPENAI_API_ORG</p></li>
+<li><p>AZURE_OPENAI_ENDPOINT</p></li>
+<li><p>AZURE_OPENAI_KEY</p></li>
+<li><p>AZURE_OPENAI_VERSION</p></li>
+</ul>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>An LLM to work with!</p>
+</dd>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
+<dd class="field-even"><p>LLM_Interface</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to TalkToEBM’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2024, InterpretML.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
