@@ -5,16 +5,22 @@ Functions either return a string or a sequene of messages / desired responses in
 """
 
 
-def graph_system_msg(expert_description="an expert statistician and data scientist"):
+def graph_system_msg(
+    expert_description="an expert statistician and data scientist", language: str = None
+):
     """A system message that instructs the LLM to work with the graphs of an EBM.
 
     Args:
         expert_description (str, optional): Description of the expert that we want the LLM to be. Defaults to "an expert statistician and data scientist".
+        language (str, optional): Language instruction (e.g. "Portuguese (Brazil)"). Defaults to None.
 
     Returns:
         str: The system message.
     """
-    return f"You are {expert_description}. You interpret global explanations produced by a Generalized Additive Model (GAM). You answer all questions to the best of your ability, relying on the graphs provided by the user, any other information you are given, and your knowledge about the real world."
+    msg = f"You are {expert_description}. You interpret global explanations produced by a Generalized Additive Model (GAM). You answer all questions to the best of your ability, relying on the graphs provided by the user, any other information you are given, and your knowledge about the real world."
+    if language is not None:
+        msg += f" Always respond in {language}."
+    return msg
 
 
 def describe_graph(
@@ -22,6 +28,7 @@ def describe_graph(
     graph_description="",
     dataset_description="",
     task_description="Please describe the general pattern of the graph.",
+    language: str = None,
 ):
     """Prompt the LLM to describe a graph. This is intended to be the first prompt in a conversation about a graph.
 
@@ -30,6 +37,7 @@ def describe_graph(
         graph_description (str, optional): Additional description of the graph (e.g. "The y-axis of the graph depicts the probability of sucess."). Defaults to "".
         dataset_description (str, optional): Additional description of the dataset (e.g. "The dataset is a Pneumonia dataset collected by [...]"). Defaults to "".
         task_description (str, optional): A final prompt to instruct the LLM. Defaults to "Please describe the general pattern of the graph.".
+        language (str, optional): Language instruction (e.g. "Portuguese (Brazil)"). Defaults to None.
 
     Returns:
         str: The prompt to describe the graph.
@@ -56,18 +64,23 @@ The graph is provided in the following format:
 
     # the task that the LLM is intended to perform
     prompt += task_description
+    if language is not None:
+        prompt += f" Please respond in {language}."
     return prompt
 
 
-def describe_graph_cot(graph, num_sentences=7, **kwargs):
+def describe_graph_cot(graph, num_sentences=7, language: str = None, **kwargs):
     """Use chain-of-thought reasoning to elicit a description of a graph in at most {num_sentences} sentences.
+
+    Args:
+        language (str, optional): Language instruction (e.g. "Portuguese (Brazil)"). Defaults to None.
 
     Returns:
         Messages in OpenAI format.
     """
     return [
-        {"role": "system", "content": graph_system_msg()},
-        {"role": "user", "content": describe_graph(graph, **kwargs)},
+        {"role": "system", "content": graph_system_msg(language=language)},
+        {"role": "user", "content": describe_graph(graph, language=language, **kwargs)},
         {"role": "assistant", "temperature": 0.7, "max_tokens": 3000},
         {
             "role": "user",
@@ -88,16 +101,23 @@ def summarize_ebm(
     expert_description="an expert statistician and data scientist",
     dataset_description="",
     num_sentences: int = None,
+    language: str = None,
 ):
     """Prompt the LLM to summarize a Generalized Additive Model (GAM).
+
+    Args:
+        language (str, optional): Language instruction (e.g. "Portuguese (Brazil)"). Defaults to None.
 
     Returns:
         Messages in OpenAI format.
     """
+    system_msg = f"You are {expert_description}. Your task is to provide an overall summary of a Generalized Additive Model (GAM). The model consists of different graphs that contain the effect of a specific input feature. "
+    if language is not None:
+        system_msg += f"Always respond in {language}. "
     messages = [
         {
             "role": "system",
-            "content": f"You are {expert_description}. Your task is to provide an overall summary of a Generalized Additive Model (GAM). The model consists of different graphs that contain the effect of a specific input feature. ",
+            "content": system_msg,
         }
     ]
     user_msg = """Your task is to summarize a Generalized Additive Model (GAM). To perform this task, you will be given
@@ -109,9 +129,11 @@ def summarize_ebm(
         user_msg += f"Here is a description of the dataset that the model was trained on.\n\n{dataset_description}\n\n"
     user_msg += """Now, please provide a summary of the model.
     
-The summary should contain the most important features in the model and their effect on the outcome. Unimportant effects and features can be ignored. 
+    The summary should contain the most important features in the model and their effect on the outcome. Unimportant effects and features can be ignored. 
     
 Pay special attention to include any surprising patterns in the summary."""
+    if language is not None:
+        user_msg += f" Please respond in {language}."
     messages.append({"role": "user", "content": user_msg})
     messages.append({"role": "assistant", "temperature": 0.7, "max_tokens": 3000})
     if num_sentences is not None:

@@ -5,7 +5,7 @@ We interface the LLM via the simple class AbstractChatModel. To use your own LLM
 """
 
 from dataclasses import dataclass
-from openai import OpenAI, AzureOpenAI
+from openai import OpenAI, AzureOpenAI, BadRequestError
 
 import copy
 import os
@@ -43,13 +43,34 @@ class OpenAIChatModel(AbstractChatModel):
         self.model = model
 
     def chat_completion(self, messages, temperature, max_tokens):
-        response = self.client.chat.completions.create(
-            model=self.model,
-            messages=messages,
-            temperature=temperature,
-            max_tokens=max_tokens,
-            timeout=90,
-        )
+        def _send(temp_value, use_max_completion_tokens=True):
+            """Helper to call the API with the right param names."""
+            kwargs = {
+                "model": self.model,
+                "messages": messages,
+                "timeout": 90,
+            }
+            # Some models only accept the default temperature. Leave it out when None.
+            if temp_value is not None:
+                kwargs["temperature"] = temp_value
+            if use_max_completion_tokens:
+                kwargs["max_completion_tokens"] = max_tokens
+            else:
+                kwargs["max_tokens"] = max_tokens
+            return self.client.chat.completions.create(**kwargs)
+
+        try:
+            response = _send(temperature, use_max_completion_tokens=True)
+        except BadRequestError as exc:
+            exc_str = str(exc)
+            # Retry with legacy max_tokens if the model does not support max_completion_tokens.
+            if exc.code == "unsupported_parameter" and "max_tokens" in exc_str:
+                response = _send(temperature, use_max_completion_tokens=False)
+            # Some lightweight models do not support non-default temperature values.
+            elif exc.code == "unsupported_value" and "temperature" in exc_str:
+                response = _send(1, use_max_completion_tokens=True)
+            else:
+                raise
         # we return the completion string or "" if there is an invalid response/query
         try:
             response_content = response.choices[0].message.content
